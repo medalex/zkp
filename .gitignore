@@ -1,0 +1,12 @@
+# Dependencies — восстанавливаются через npm install
+node_modules/
+
+# Platform binary — скачивается с https://github.com/iden3/circom/releases
+circom.exe
+
+# Промежуточные файлы церемонии (не финальные)
+build/pot12_0000.ptau
+build/pot12_0001.ptau
+build/pot12_0002.ptau
+build/prescription_0000.zkey
+build/prescription_0001.zkey

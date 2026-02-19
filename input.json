@@ -1,0 +1,14 @@
+{
+  "doctorId": "123",
+  "doctorSecret": "456",
+  "authorizedAction": "1",
+  "sourceId": "1",
+  "dataAge": "30",
+  "allergyClassId": "2",
+  "medicationClassId": "5",
+  "doctorCredentialHash": "19620391833206800292073497099357851348339828238212863168390691880932172496143",
+  "trustedSourceHash": "18586133768512220936620570745912940619677854269274689475585506675881198879027",
+  "requiredAction": "1",
+  "deltaMax": "90",
+  "outcome": "1"
+}
