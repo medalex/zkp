@@ -2,8 +2,8 @@
  * Trusted Setup Ceremony for PrescriptionValidation circuit
  * Groth16 proving system, bn128 curve
  *
- * Phase 1 (Powers of Tau) — универсальная, не зависит от схемы
- * Phase 2 (circuit-specific) — привязана к prescription.r1cs
+ * Phase 1 (Powers of Tau) — universal, circuit-independent
+ * Phase 2 (circuit-specific) — tied to prescription.r1cs
  */
 
 const snarkjs = require("snarkjs");
@@ -105,7 +105,7 @@ async function main() {
         `${BUILD_DIR}/pot12_0000.ptau`,
         `${BUILD_DIR}/pot12_0001.ptau`,
         "Contributor-1",
-        "entropy-phrase-alpha-1234"   // детерминированная энтропия для воспроизводимости
+        "entropy-phrase-alpha-1234"   // deterministic entropy for reproducibility
     );
     log(`    Contribution hash: ${contrib1}`);
 
