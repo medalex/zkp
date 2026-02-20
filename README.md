@@ -136,6 +136,7 @@ The full ceremony transcript is in [ceremony_log.txt](ceremony_log.txt).
 .
 ├── prescription.circom          # Circuit source (Circom 2.0)
 ├── ceremony.js                  # Reproducible trusted setup script
+├── prove.js                     # Scenario test runner (7 test cases)
 ├── package.json                 # Node.js dependencies (snarkjs, circomlibjs)
 ├── .gitignore
 │
@@ -146,6 +147,10 @@ The full ceremony transcript is in [ceremony_log.txt](ceremony_log.txt).
 ├── proof.json                   # Example ZK proof (pi_a, pi_b, pi_c)
 ├── public.json                  # Corresponding public signals
 ├── input.json                   # Example witness input (test data)
+├── test_results.json            # Machine-readable test results
+│
+├── TEST_CASES.md                # Test case specification (7 scenarios)
+├── TEST_REPORT.md               # Test execution report with results
 │
 └── build/
     ├── prescription.r1cs        # Compiled R1CS constraint system
@@ -231,6 +236,31 @@ The `pubSignals` array corresponds to:
 ```
 [doctorCredentialHash, trustedSourceHash, requiredAction, deltaMax, outcome]
 ```
+
+---
+
+## Testing
+
+The repository includes a scenario test suite covering correctness, security, and edge cases.
+
+```bash
+node prove.js
+```
+
+**8/8 scenarios pass.** Results are written to `test_results.json`.
+
+| ID | Scenario | Proof | Verify |
+|----|----------|:-----:|:------:|
+| S1 | Valid baseline | ✓ | ✓ |
+| S2 | Invalid credential (forged doctorSecret) | ✗ | ✗ |
+| S3 | Untrusted source (sourceId not in registry) | ✗ | ✗ |
+| S4 | Freshness violation (dataAge > Δmax) | ✗ | ✗ |
+| S5a | Contraindication — honest reject | ✓ | ✓ |
+| S5b | Contraindication — forged accept | ✗ | ✗ |
+| S6 | Replay attack (tampered public signals) | reuse | ✗ |
+| S7 | Policy update (wrong verification key) | reuse | ✗ |
+
+See [TEST_CASES.md](TEST_CASES.md) for full scenario specification and [TEST_REPORT.md](TEST_REPORT.md) for the detailed execution report.
 
 ---
 

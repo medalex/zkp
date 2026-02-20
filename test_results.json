@@ -1,0 +1,58 @@
+[
+  {
+    "id": "S1",
+    "name": "Valid baseline — accept prescription",
+    "expectProof": true,
+    "expectVerify": true,
+    "result": true
+  },
+  {
+    "id": "S2",
+    "name": "Invalid credential — forged doctorSecret",
+    "expectProof": false,
+    "expectVerify": false,
+    "result": true
+  },
+  {
+    "id": "S3",
+    "name": "Untrusted source — sourceId not in governance registry",
+    "expectProof": false,
+    "expectVerify": false,
+    "result": true
+  },
+  {
+    "id": "S4",
+    "name": "Freshness violation — dataAge exceeds Δmax",
+    "expectProof": false,
+    "expectVerify": false,
+    "result": true
+  },
+  {
+    "id": "S5a",
+    "name": "Contraindication — reject outcome proved correctly",
+    "expectProof": true,
+    "expectVerify": true,
+    "result": true
+  },
+  {
+    "id": "S5b",
+    "name": "Outcome integrity — approve attempt despite contraindication",
+    "expectProof": false,
+    "expectVerify": false,
+    "result": true
+  },
+  {
+    "id": "S6",
+    "name": "Replay / substitution — tampered public signals",
+    "expectProof": true,
+    "expectVerify": false,
+    "result": true
+  },
+  {
+    "id": "S7",
+    "name": "Policy update — proof verified against wrong verification key",
+    "expectProof": true,
+    "expectVerify": false,
+    "result": true
+  }
+]

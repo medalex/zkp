@@ -1,0 +1,1852 @@
+\documentclass[journal]{IEEEtran}
+\usepackage{multirow}
+% *** CITATION PACKAGES ***
+\usepackage[utf8]{inputenc}
+
+
+\usepackage{cite}
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{textalpha}
+\usepackage{newtxtext}
+\usepackage{newtxmath}
+\usepackage{url}
+\usepackage{enumitem}
+
+
+
+\ifCLASSINFOpdf
+\else
+\fi
+
+% *** MATH PACKAGES ***
+%
+\usepackage{amsmath}
+\let\Bbbk\relax
+\usepackage{amssymb}
+\let\openbox\relax
+\usepackage{amsthm}
+\usepackage{thmtools}
+
+
+\newtheorem{definition}{Definition}
+
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\begin{document}
+
+\title{Privacy-Preserving Governance Consensus for Decentralized E-Health Workflows Using Zero-Knowledge Proofs}
+%
+%
+% author names and IEEE memberships
+% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
+% a structure at a ~ so this keeps an author's name from being broken across
+% two lines.
+% use \thanks{} to gain access to the first footnote area
+% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
+% was not built to handle multiple paragraphs
+%
+
+\author{
+    Aleksandr Kormiltsyn,
+    Chibuzor Udokwu,
+    and~Alex Norta,~\IEEEmembership{Senior Member, IEEE}%
+    \thanks{
+        Aleksandr Kormiltsyn is with the Department of Software Science,
+        Tallinn University of Technology, Akadeemia tee 15A, 12816 Tallinn, Estonia
+        (e-mail: aleksandr.kormiltson@taltech.ee).
+    }%
+    \thanks{
+        Chibuzor Udokwu is with the University of Applied Sciences Upper Austria,
+        Wehrgrabengasse 1–3, 4400 Steyr, Austria.
+    }%
+    \thanks{
+        Alex Norta is with Tallinn University, Tallinn, Estonia;
+        Department of Informatics, University of Pretoria, South Africa, Dymaxion O{\"U}, Tallinn, Estonia; and Nortadesyco.xyz
+        (e-mail: alex.norta.phd@ieee.org).
+    }%
+}
+
+
+% note the % following the last \IEEEmembership and also \thanks - 
+% these prevent an unwanted space from occurring between the last author name
+% and the end of the author line. i.e., if you had this:
+% 
+% \author{....lastname \thanks{...} \thanks{...} }
+%                     ^------------^------------^----Do not want these spaces!
+%
+% a space would be appended to the last name and could cause every name on that
+% line to be shifted left slightly. This is one of those "LaTeX things". For
+% instance, "\textbf{A} \textbf{B}" will typeset as "A B" not "AB". To get
+% "AB" then you have to do: "\textbf{A}\textbf{B}"
+% \thanks is no different in this regard, so shield the last } of each \thanks
+% that ends a line with a % and do not let a space in before the next \thanks.
+% Spaces after \IEEEmembership other than the last one are OK (and needed) as
+% you are supposed to have spaces between the names. For what it is worth,
+% this is a minor point as most people would not even notice if the said evil
+% space somehow managed to creep in.
+
+
+
+% The paper headers
+\markboth{Journal of \LaTeX\ Class Files,~Vol.~14, No.~8, August~2015}%
+{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of IEEEtran.cls for IEEE Journals}
+% The only time the second header will appear is for the odd numbered pages
+% after the title page when using the twoside option.
+% 
+% *** Note that you probably will NOT want to include the author's ***
+% *** name in the headers of peer review papers.                   ***
+% You can use \ifCLASSOPTIONpeerreview for conditional compilation here if
+% you desire.
+
+
+
+
+% If you want to put a publisher's ID mark on the page you can do it like
+% this:
+%\IEEEpubid{0000--0000/00\$00.00~\copyright~2015 IEEE}
+% Remember, if you use this you must call \IEEEpubidadjcol in the second
+% column for its text to clear the IEEEpubid mark.
+
+
+
+% use for special paper notices
+%\IEEEspecialpapernotice{(Invited Paper)}
+
+
+
+
+% make the title area
+\maketitle
+
+% As a general rule, do not put math, special symbols or citations
+% in the abstract or keywords.
+\begin{abstract}
+% What is the paper about?
+This paper builds on our previous work that defines a requirement framework and an ontology for decentralized governance in personalized e-health. We explore the integration of zero-knowledge proof mechanisms (ZKPs) to enhance the verifiability and privacy of consensus and conflict resolution in DAO-based healthcare governance. Among these, Zero-Knowledge Succinct Non-Interactive Arguments of Knowledge (zk-SNARK) serves as a representative example due to its maturity and practical adoption.
+%What is the state of the art?
+Consensus mechanisms such as PoW, PoS, and PBFT are well studied, while ZKPs (e.g., zk-SNARK, zk-STARK, Bulletproofs) have recently gained traction for privacy-preserving verification in blockchain networks. In governance contexts, ZKPs enable the proof of policy compliance and decision correctness without disclosing sensitive information.
+%What is the gap in the state of the art?
+Existing blockchain and consensus models provide transparency and integrity, but fall short in offering cryptographically verifiable privacy. This limitation presents a critical barrier for domains like healthcare, where sensitive data must remain confidential while still supporting verifiable decision-making. In particular, the integration of semantic conflict resolution with ZKP techniques remains an open and largely unexplored research area.
+%What is the solution?
+To address this gap, we propose a hybrid verification-oriented model that establishes a two-layer trust mechanism to preserve privacy over heterogeneous healthcare data. The first layer, based on ZKPs, provides cryptographic assurance of the authenticity and compliance of the data without exposing sensitive content. The second layer, a lightweight consensus process, performs semantic and contextual validation to determine whether the verified data is suitable for cross-organizational use. Data that cannot be aligned are flagged for higher-level governance evaluation. This architecture enables secure, auditable, and privacy-preserving decision-making across institutions.
+%Why is the solution good/better than other solutions?
+The proposed solution combines cryptographic verifiability and contextual interoperability into a two-layer trust architecture. Unlike transparency-driven blockchain models, it ensures that only authentic, compliant, and contextually valid data participate in collaborative workflows. This approach provides a trustworthy, auditable, and GDPR-compliant foundation for decentralized healthcare data governance.
+\end{abstract}
+
+% Note that keywords are not normally used for peerreview papers.
+\begin{IEEEkeywords}
+Decentralized governance, e-health, zero-knowledge proofs (ZKP), privacy-preserving consensus, DAO.
+\end{IEEEkeywords}
+
+
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Introduction}
+% The very first letter is a 2 line initial drop letter followed
+% by the rest of the first word in caps.
+% 
+% form to use if the first word consists of a single letter:
+% \IEEEPARstart{A}{demo} file is ....
+% 
+% form to use if you need the single drop letter followed by
+% normal text (unknown if ever used by the IEEE):
+% \IEEEPARstart{A}{}demo file is ....
+% 
+% Some journals put the first two words in caps:
+% \IEEEPARstart{T}{his demo} file is ....
+% 
+% Here we have the typical use of a "T" for an initial drop letter
+% and "HIS" in caps to complete the first word.
+\IEEEPARstart{H}{ealthcare} data breaches have reached unprecedented levels, with profound implications for patient privacy, organizational costs, and public trust. 
+In 2024, 735 large-scale data breaches (affecting 500+ records each) were reported to the U.S. Department of Health and Human Services Office for Civil Rights~\cite{HIPAAJournal2024Statistics}, exposing the protected health information (PHI) of over 276 million individuals—approximately 81\% of the U.S. population~\cite{HIPAAJournal2024Largest}. This marks a 64\% increase from 2023's record of 133 million breached records and represents the worst year in history for healthcare data security ~\cite{HIPAAJournal2024Statistics}. The Change Healthcare ransomware attack alone affected an estimated 190 million individuals, making it the largest healthcare data breach ever recorded~\cite{HealthcareIT2024}.
+
+The financial impact is equally staggering. According to IBM's 2024 Cost of a Data Breach Report, healthcare organizations face the highest average breach costs across all industries at \$9.77 million per incident, more than 1.6 times the second-highest sector (financial services at \$6.08 million)~\cite{IBM2024Cost}. These costs, driven by business disruption, post-breach customer support, and regulatory penalties, have compelled 63\% of breached healthcare organizations to pass expenses onto patients through price increases~\cite{IBM2024Healthcare}. Beyond monetary losses, healthcare data breaches cause operational disruptions lasting weeks to months, with 70\% of affected organizations reporting significant disruption to patient care~\cite{IBM2024Cost}.
+
+Despite the clear need for enhanced security and privacy mechanisms, adoption of blockchain technology in healthcare remains minimal. Recent empirical studies reveal that less than 10\% of healthcare organizations have implemented blockchain-based solutions~\cite{Nature2025Blockchain}, with key barriers including high implementation costs, lack of standardization, regulatory uncertainty, and—critically—inadequate cryptographic privacy guarantees~\cite{Healthcare2024Barriers}. A 2024 physician survey identified privacy concerns as a primary adoption barrier, with 25\% of respondents citing insufficient understanding of blockchain's privacy mechanisms and 20\% highlighting integration challenges with existing Electronic Health Record (EHR) systems~\cite{Sermo2024Blockchain}.
+
+Collaboration in inter-organizational decentralized e-health processes is complicated due to privacy issues, the sensitivity of health data, and the legal regulations for processing health data. In addition, heterogeneous and partially trusted data sources introduce integrity and provenance uncertainties that require verifiable reconciliation. Current blockchain solutions provide transparency, integration, and ownership of health data, but do not offer data privacy-conscious verification. Although existing blockchain protocols such as Proof of Work (PoW) or Proof of Stake (PoS) achieve consensus at the network level~\cite{john2025proof,mohammed2024navigating,Amin2024,AlAwamy2025,carlos2024enhancing}, they do not address governance-level trust and compliance for data from the inter-institutional healthcare system.
+
+Today, several studies~\cite{10075075, Nasir2024, AlAwamy2025, yakubu2024systematic} focus on consensus mechanisms in decentralized systems that enable data consistency in domain-agnostic contexts. These mechanisms establish trust in block creation at the technical level of blockchain systems. Data immutability and transparency mitigate the risks inherent in centralization, including lack of trust, single point of failure, centralized control, censorship, and loss of autonomy. However, blockchain algorithms lack semantic interoperability, as they do not account for the meaning or contextual relationships of data. Moreover, although data on a blockchain are immutable and its usage is transparent, there is no inherent assurance of their correctness. Furthermore, the intrinsic transparency of blockchain technology limits the granularity of privacy, which presents challenges in managing sensitive information.
+
+There are research studies that focus on blockchain-based e-health architecture and governance~\cite{Andrew2023,elvas2023sharing,alruwaill2025hchain,Villarreal2023,jha2025blockchain}. Blockchain addresses key challenges in healthcare related to data security, transparency, efficiency, patient control, and interoperability. The international standard HL7 FHIR\footnote{https://www.hl7.org/fhir/} is, according to research~\cite{gazzarata2024hl7}, mainly used to improve interoperability and enable Clinical Decision Support Systems (CDSS). HL7 FHIR (Fast Healthcare Interoperability Resources) is an international healthcare data exchange standard that defines how clinical information is structured and transmitted through modular, web-based resources to enable interoperable and secure communication between healthcare information systems. In~\cite{9258958}, the authors focus on improving interoperability and patient access control over medical data. Research~\cite{10146548} analyzes barriers to the integration of the supply chain into e-health systems and defines the lack of initiatives from healthcare providers as the main barrier. However, existing FHIR and blockchain solutions ignore local/national standards and do not fully address infrastructure, security, and privacy issues. At the same time, resources and technology are not enough for e-health interoperability due to a lack of semantic consensus mechanisms.
+
+Research~\cite{Lavin2024} defines zero-knowledge proof (ZKP) protocols as the universal method to enable security and maintain the privacy of data in decentralized systems. In the ZKP domain, researchers focus mainly on technical improvements of the protocol~\cite{xie2023advances}. In~\cite{sakwa5293078survey}, the authors state that folding-based proofs reduce verification costs. Research~\cite{babu2024secure} proposes a framework for secure e-health data processing based on the zk-SNARK protocol. A zk-SNARK is a cryptographic protocol that allows proving the correctness of a computation without revealing any underlying data and with very fast verification. It produces short, non-interactive proofs, making it essential for privacy-preserving transactions and scalable blockchain systems. In~\cite{9387630}, the researchers propose using ZKP in the Vehicle-to-Healthcare Everything (V2HX) communication. However, these solutions lack standardization across diverse healthcare systems with heterogeneous infrastructure and regulatory compliance, such as the Health Insurance Portability and Accountability Act (HIPAA)\footnote{https://www.hhs.gov/hipaa/index.html} and the General Data Protection Regulation (GDPR)\footnote{https://gdpr-info.eu/}. At the same time, current research is mostly focused on limitations of the networking layer rather than on cross-organizational consensus. In the context of ZKP, current algorithms are simplified and lack a formal evaluation.
+
+Despite substantial progress in decentralized consensus, blockchain-based e-health architectures, and privacy-preserving computation, current research exhibits critical limitations:
+
+\begin{itemize}
+\item \textit{Network-layer focus without semantic interoperability:} 
+      Existing consensus mechanisms (PoW, PoS, PBFT) achieve agreement 
+      at the protocol level but do not account for semantic conflicts 
+      arising from heterogeneous medical terminologies (e.g., 
+      SNOMED-CT vs. local codes)~\cite{Nasir2024, AlAwamy2025}.
+
+\item \textit{Transparency without cryptographic privacy:} 
+      Blockchain solutions provide data immutability and audit trails 
+      but expose sensitive patient information on-chain, violating 
+      GDPR and HIPAA confidentiality requirements~\cite{Andrew2023, 
+      Villarreal2023}.
+
+\item \textit{Privacy-preserving techniques inadequate for healthcare:} 
+      Multi-Party Computation requires synchronous participation 
+      (incompatible with asynchronous workflows); Homomorphic Encryption 
+      incurs 100--1000$\times$ overhead (prohibitive for real-time clinical 
+      decisions); Differential Privacy provides statistical guarantees 
+      but cannot verify individual data correctness~\cite{Evans2018, 
+      Gentry2009}. We provide verifiable policy checks and auditable commitments, while operational requirements such as retention and erasure procedures are enforced through organizational processes and are treated as out of scope of the protocol.
+
+
+\item \textit{Lack of governance-aware consensus:} 
+      Current systems lack formal mechanisms for verifiable compliance 
+      with regulatory policies (consent management, purpose limitation, 
+      right to erasure) at the consensus layer~\cite{Angurala2025, 
+      Amin2024}.
+
+\item \textit{No integration of semantic truth with cryptographic 
+      verification:} 
+      The integration of semantic conflict resolution---grounded in formal 
+      model-theoretic semantics (e.g., Tarski's theory of truth)---with 
+      ZKP techniques remains an open and largely 
+      unexplored research area~\cite{Lavin2024}.
+\end{itemize}
+
+These gaps collectively prevent the deployment of trustworthy, auditable, 
+and privacy-preserving decentralized governance frameworks for 
+inter-organizational e-health systems.
+
+\paragraph{Scope and objective.}
+In this paper, the object of agreement is not a numeric aggregation result but the \emph{acceptance of semantic statements} arising in cross-organizational e-health workflows (e.g., whether a prescription is valid under allergy and renal-function constraints). We model such statements in a domain-specific formal language and evaluate their truth under a shared semantic model and an authenticated interpreter context, yielding a verifiable accept/reject outcome that can be used for governance-level consensus among autonomous participants.
+
+\paragraph{Privacy and compliance considerations.}
+Our design follows data-minimization principles: patient-specific evidence remains off-chain and is used only as private witness input during proof generation, while the public ledger anchors governance-approved ontology/policy artifacts and privacy-preserving commitments (e.g., hashes or Merkle roots) for auditability. This supports privacy-preserving verification and accountability; regulatory compliance beyond technical minimization (e.g., lawful basis management and retention/erasure procedures) depends on organizational controls and is treated as out of scope of the protocol.
+
+
+The main contributions of this paper are as follows:
+\begin{itemize}
+\item We introduce a domain-specific formal language and a Tarskian-style semantics extended with authenticated interpreter contexts to evaluate the truth of clinical and governance statements in decentralized e-health workflows (Section~\ref{s:preliminaries}).
+\item We derive domain-specific requirements for governance-aware semantic consensus and conflict resolution in cross-organizational e-health settings (Section~\ref{s:rq1}).
+\item We propose architectural and governance mechanisms that realize these requirements, enabling semantic statement acceptance across heterogeneous participants (Section~\ref{s:rq2}).
+\item We specify a zk-SNARK-based compilation and verification pipeline, including witness/public inputs and integration into the governance workflow, to provide verifiable compliance checks over off-chain evidence (Section~\ref{s:rq3}).
+\end{itemize}
+
+
+\noindent Based on the detected gap in the state-of-the-art research, the main research question is:
+
+\begin{description}[leftmargin=\IEEElabelindentfactor\IEEElabelindent,labelsep=0.5em, style=nextline]
+\item[\textbf{Main RQ}] \textit{How to design a domain-specific consensus mechanism for decentralized e-healthcare workflows that enables verifiable privacy, semantic interoperability, and governance-aware validation of clinical and policy statements using ZKPs?}
+\end{description}
+
+\noindent To establish a separation of concerns, we deduce the following sub-questions:
+
+\begin{description}[leftmargin=\IEEElabelindentfactor\IEEElabelindent,
+                    labelsep=0.5em, style=nextline]
+\item[\textbf{RQ1}] \textit{What domain-specific, interoperability, and compliance requirements are needed to achieve verifiable and privacy-preserving semantic consensus on clinical and governance statements in decentralized e-health workflows?}
+
+\noindent The answer to this question identifies the requirements for semantic statement evaluation, interoperability, and verifiable governance acceptance in decentralized workflows.
+
+\item[\textbf{RQ2}] \textit{What architectural and governance mechanisms support the realization of a semantically interoperable and privacy-preserving framework for cross-organizational e-health systems?}
+
+\noindent Answering this question specifies the architecture and governance workflow in which semantic evaluation results are anchored and verified, while ZKPs provide cryptographic evidence for private compliance checks.
+
+\item[\textbf{RQ3}] \textit{What roles, properties, and integrability of ZKPs are essential to encode and verify the semantic truth of governance and medical statements, including the authentication of authorized interpreters, in formally evaluated and privacy-preserving decentralized e-health consensus mechanisms?}
+
+\noindent The answer to this question defines the technical design of the zk-SNARK-based proof construction and verification pipeline.
+\end{description}
+
+
+
+
+The remainder of the paper is structured as follows. Section~\ref{s:preliminaries} introduces the running case of the e-health domain and the necessary preliminaries. Next, Section~\ref{s:rq1} defines the logical space of characteristics for the consensus mechanism for conflict resolution in decentralized e-health. Section~\ref{s:rq2} proposes the existing consensus mechanisms corresponding to the requirements defined in the previous section. Section~\ref{s:rq3} details the ZKP compilation, witness/public input, and integration of zk-SNARK verification into the governance workflow. Section~\ref{s:eval} provides an evaluation of the e-health running case with formal validation using CPN. Section~\ref{s:discussions} discusses the results of the research, introduces current limitations, open issues, and proposes future work directions. Finally, Section~\ref{s:conclusion} summarizes the results of the paper. 
+
+\section{Preliminaries}
+\label{s:preliminaries}
+This section introduces the background concepts required to understand the results of this research. It outlines the running case, the core mechanisms of decentralized consensus, privacy-preserving verification, and semantic approaches to agreement used throughout the paper.
+
+\subsection{Running case}
+\label{ss:rc}
+We extend the running case originally developed in the Transforming E Healthcare Data Management in LMICs Using Blockchain Technology (TEH-BLINC) workshop to analyze the semantic conflicts that emerge during inter-organizational prescription workflows in decentralized healthcare. TEH-BLMIC 2025 was an academic event organized by Ulster University and the Indian Institute of Technology Kanpur, focusing on leveraging blockchain technology to transform electronic healthcare data management in low- and middle-income countries. The scenario involves three autonomous entities: a public hospital, a private diagnostics laboratory, and a community pharmacy. A patient authorizes data sharing among these organizations to support a coordinated prescription creation process.
+
+Figure~\ref{f:rc-uc} illustrates the updated running case, highlighting the distributed interaction between entities and the emergence of semantic mismatches during the preparation of prescriptions. When a hospital physician initiates a digital prescription, the Health Information System (HIS) requests relevant patient data—such as laboratory results, allergy records, and current medications—from multiple external systems, including Electronic Health Records (EHR), Personal Health Records (PHR), and laboratory information systems. Although each organization maintains its own data schema and authorization policy, the prescription workflow requires coherent and interoperable data across all participants.
+
+In Figure~\ref{f:conflict} semantic conflicts arise when the same clinical concepts are represented differently between institutions or when the policies diverge that govern data access. For example, the hospital’s EHR can encode “Penicillin allergy” using a SNOMED CT concept\footnote{https://www.snomed.org/}, while the laboratory system refers to “β-lactam sensitivity” in its local terminology. Similarly, the pharmacy may require a valid prescription authorization token, while the hospital interprets the patient’s prior consent as sufficient. Another type of conflict occurs when the doctor attempts to check for drug interactions, but the patient restricts access to their current medication list, causing an incomplete semantic context for reasoning.
+
+In this work, semantic conflicts are detected, logged, and resolved through a decentralized consensus mechanism that integrates ontology alignment and governance protocols while preserving patient privacy.
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=8cm]{running-case.jpg}
+  \caption{Secure e-health data sharing and processing in the inter-organizational decentralized environment.}
+  \label{f:rc-uc}
+\end{figure}
+
+\begin{figure}[tb]
+  \centering
+  \includegraphics[width=6cm]{conflict.png}
+  \caption{Conflict while preparing digital prescription.}
+  \label{f:conflict}
+\end{figure}
+
+
+\subsection{Consensus Algorithms}
+\label{ss:consensus}
+Blockchain consensus algorithms, including Proof-of-Work (PoW), Proof-of-Stake (PoS), and Byzantine Fault Tolerant (BFT) protocols, are widely used to establish agreement on transaction ordering and ledger state in decentralized networks. In this work, such mechanisms are considered to provide network-level consistency and fault tolerance.
+However, they do not address governance-level validation, semantic correctness of domain-specific statements, or privacy-preserving compliance verification required in inter-organizational e-health workflows.
+
+
+\subsection{Zero-Knowledge Proof Systems}
+\label{ss:zkp}
+Zero-knowledge proofs (ZKPs) enable the verification of computational correctness without revealing the underlying data~\cite{lavin2024zkpapplications}. In decentralized healthcare settings, ZKPs provide a cryptographic foundation for verifiable compliance and privacy-preserving validation of sensitive medical statements~\cite{peng2024zkpblockchain}.
+
+Several classes of ZKP systems are relevant in this context. zk-SNARKs offer succinct, non-interactive proofs with constant verification complexity, making them suitable for on-chain verification in governance-oriented workflows. zk-STARKs
+eliminate trusted setup assumptions and provide post-quantum security at the cost of larger proof sizes. Bulletproofs enable efficient range and constraint proofs without trusted setup but incur higher verification overhead for complex statements~\cite{ouderoelink2024slr}.
+
+In this work, zk-SNARKs are considered as a representative proof system due to their maturity, efficient verification, and practical adoption in blockchain-based governance infrastructures. Alternative ZKP constructions are discussed where relevant but are not the focus of the technical design.
+
+\subsection{Tarski’s Semantics and Semantic Consensus}
+\label{ss:semantic}
+Tarski's model-theoretic semantics~\cite{tarski1944semantic} provides a rigorous foundation for defining truth in formal languages by evaluating statements with respect to a structure and an interpretation. These principles motivate \emph{semantic consensus} in decentralized environments, where distributed participants must agree not only on the validity and ordering of transactions, but also on the meaning of exchanged data. In domains such as decentralized e-health, where clinical decisions depend on provenance, authorization, and contextual validity, semantic consensus is essential to ensure interoperable and trustworthy interpretation across autonomous organizations.
+
+In this work, domain-specific medical statements are modeled as formulas $\varphi$, whose truth is evaluated relative to a semantic model $M$, a variable assignment $g$, and an authenticated interpreter context $I$, denoted as $M, I, g \models \varphi$. In classical first-order semantics, truth is written as $M, g \models \varphi$; we extend this relation with $I$ to capture provenance, freshness, and authorization constraints. The assignment $g$ provides values for variables occurring in $\varphi$ in the standard Tarskian sense, while the context $I$ captures provenance, freshness, and authorization constraints that make truth evaluation explicitly context-dependent in decentralized workflows. For ground statements (i.e., formulas without variables), we omit $g$ and write $M, I \models \varphi$ for readability. Semantic consensus is thus achieved when participants agree on the evaluation outcome of $\varphi$ under the same $M$ and governance-defined policies. This notion of truth is operationalized in the proposed architecture through a semantic interpretation layer, which derives the truth conditions prior to cryptographic proof generation and governance-based acceptance.
+
+
+
+%================Semantic Model for E-Health Workflows==================
+
+\subsubsection{Semantic Model for E-Health Workflows}
+In our framework, the Decentralized Knowledge Graph (DKG)\footnote{\url{https://origintrail.io}} serves as the shared public anchor for the ontology schema and governance-approved axioms, and, where needed, privacy-preserving commitments to evidence. The underlying patient-specific evidence remains off-chain and is used only as private witness input during ZKP generation.
+
+
+%
+\begin{IEEEeqnarray}{rCl}
+M &=& \langle \mathcal{C}, \mathcal{R}, \mathcal{E}, \mathcal{A} \rangle
+\label{eq:semantic-model}
+\end{IEEEeqnarray}
+%
+where each component serves a distinct role in semantic interpretation:
+
+\begin{itemize}
+    \item $\mathcal{C}$ represents \textbf{medical concepts} drawn from standard ontologies (e.g., SNOMED-CT, ICD-11), including drug classes such as \textsf{Penicillin} and \textsf{$\beta$-lactam}, as well as clinical predicates such as \textsf{Allergy}.
+    
+    \item $\mathcal{R}$ encodes \textbf{semantic relations} between concepts, including \textsf{subClassOf}, \textsf{contraindication}, and \textsf{treats}. These relations enable reasoning about drug classifications and clinical interactions.
+    
+    \item $\mathcal{E}$ contains \textbf{patient-specific evidence maintained off-chain}
+    (e.g., EHR/PHR records and laboratory measurements). The DKG anchors only
+    privacy-preserving commitments and source attestations to such evidence
+    (e.g., hashes or Merkle roots), while the underlying data are used exclusively
+    as private witness inputs during ZKP generation.
+
+    
+    \item $\mathcal{A}$ comprises \textbf{clinical axioms} that define domain-specific inference rules.
+\end{itemize}
+
+The axiom set $\mathcal{A}$ includes subsumption relationships and inference rules essential for contraindication detection. A representative subsumption axiom is:
+%
+\begin{IEEEeqnarray}{rCl}
+\textsf{Penicillin} &\sqsubseteq& \textsf{$\beta$-lactam}
+\label{eq:subsumption-example}
+\end{IEEEeqnarray}
+%
+This axiom states that Penicillin is a subclass of the $\beta$-lactam antibiotic family. Similarly, Amoxicillin belongs to the same family: $\textsf{Amoxicillin} \sqsubseteq \textsf{$\beta$-lactam}$.
+
+A representative inference rule in $\mathcal{A}$ captures cross-reactivity handling for allergies.
+For the running case, we adopt a \emph{conservative governance policy} that treats penicillin allergy as a class-level contraindication for $\beta$-lactam antibiotics~\cite{csaci2020betalactam}:
+%
+\begin{IEEEeqnarray}{l}
+\forall x.\, \mathit{Allergy}(x, \textsf{Penicillin}) \nonumber\\
+\quad \rightarrow \mathit{Contraindication}(x, \textsf{$\beta$-lactam})
+\label{eq:inference-rule}
+\end{IEEEeqnarray}
+%
+This rule states that if a patient $x$ is labeled as penicillin-allergic, then the $\beta$-lactam class is treated as contraindicated for $x$ under the adopted policy, enabling a clear semantic safety check in a decentralized workflow.
+
+\noindent\textbf{Ontology alignment as bridge axioms.}
+To make terminology alignment part of the formal system, we model it as governance-approved bridge axioms in $\mathcal{A}$.
+For the running case, we treat laboratory-reported hypersensitivity $\mathit{Sens}$ as semantically equivalent to allergy assertions $\mathit{Al}$ by adopting the following bidirectional bridge:
+\begin{equation}
+\forall p\in D_P,\forall s\in D_S:\ \mathit{Sens}(p,s) \leftrightarrow \mathit{Al}(p,s).
+\label{eq:bridge-sens-al}
+\end{equation}
+This alignment enables meaning-preserving rewriting between heterogeneous representations prior to evaluating statements under the satisfaction relation.
+
+
+
+The \textbf{interpreter context} $I$ supplies metadata necessary for evaluating truth conditions:
+%
+\begin{IEEEeqnarray}{rCl}
+I &=& \langle \mathit{source}, \mathit{timestamp}, \mathit{credentials}, \mathit{authorization} \rangle
+\label{eq:interpreter-context}
+\end{IEEEeqnarray}
+%
+where:
+\begin{itemize}
+    \item $\mathit{source}$ identifies the data-providing organization (e.g., Hospital, Laboratory);
+    \item $\mathit{timestamp}$ records when the data was generated or last updated;
+    \item $\mathit{credentials}$ contains cryptographic proof of the interpreter's identity;
+    \item $\mathit{authorization}$ specifies permitted actions (e.g., \textsf{prescribe}, \textsf{dispense}).
+\end{itemize}
+
+Truth evaluation follows a Tarskian-style satisfaction relation, written $M, I, g \models \varphi$. In classical first-order semantics, truth is written as $M, g \models \varphi$; we extend this relation with the authenticated interpreter context $I$ to capture provenance, freshness, and authorization constraints. For ground statements, we omit $g$ and write $M, I \models \varphi$ for readability.
+
+%
+\begin{enumerate}
+    \item \textbf{Grounding}: Statement $\varphi$ is instantiated by applying $g$ (when variables are present) and by referencing concepts from $\mathcal{C}$ and evidence items from $\mathcal{E}$.
+    \item \textbf{Consistency checking}: The statement is verified against axioms $\mathcal{A}$ via reasoning over relations $\mathcal{R}$.
+    \item \textbf{Authorization verification}: The authorization field in $I$ is checked to permit the action required by $\varphi$.
+    \item \textbf{Temporal validation}: Data freshness is verified by enforcing $(t_{\mathit{now}} - \mathit{timestamp}) \le \Delta_{\max}$, where $t_{\mathit{now}}$ is the verification time and $\Delta_{\max}=90$ days.
+\end{enumerate}
+%
+If all conditions hold, then $M, I, g \models \varphi$; for ground statements, this is written as $M, I \models \varphi$. Otherwise, the statement is rejected or flagged for governance escalation.
+
+
+%========================Formal definitions=============================
+
+\subsubsection{Formal Definitions}
+\label{sec:formal-definitions}
+
+This section provides formal definitions for the semantic constructs introduced above.
+For readability, Table~\ref{tab:symbols} summarizes the domains, predicates, and key symbols used throughout the formalization.
+For brevity, we use the following predicate abbreviations: $\mathit{Al}$ (Allergy), $\mathit{Ct}$ (Contraindication), $\mathit{Rx}$ (Prescription), $\mathit{Au}$ (Authorized).
+
+\begin{table}[t]
+\centering
+\caption{Summary of domains, predicates, and symbols used in $\mathcal{L}_{EH}$.}
+\label{tab:symbols}
+\begin{tabular}{p{0.26\linewidth} p{0.66\linewidth}}
+\hline
+\textbf{Symbol} & \textbf{Meaning / Type} \\
+\hline
+$D$ & Domain of discourse, $D = D_P \uplus D_S \uplus D_M \uplus D_D \uplus D_I$ \\
+$D_P$ & Patients \\
+$D_S$ & Substances (drugs and allergens) \\
+$D_M$ & Medical conditions \\
+$D_D$ & Physicians / prescribers \\
+$D_I$ & Interpreter contexts \\
+$Act$ & Action labels (e.g., \textsf{prescribe}, \textsf{dispense}, \textsf{report}) \\
+\hline
+$\mathit{Al}(p,s)$ & Allergy predicate, $p\in D_P$, $s\in D_S$ \\
+$\mathit{Rx}(d,p,m)$ & Prescription predicate, $d\in D_D$, $p\in D_P$, $m\in D_S$ \\
+$\mathit{Ct}(p,m)$ & Contraindication predicate, $p\in D_P$, $m\in D_S$ \\
+$\mathit{Cond}(p,c)$ & Condition predicate, $p\in D_P$, $c\in D_M$ \\
+$\mathit{Au}(i,a)$ & Authorization predicate, $i\in D_I$, $a\in Act$ \\
+$\mathit{Sens}(p,s)$ & Laboratory-reported hypersensitivity/sensitivity statement (aligned to $\mathit{Al}(p,s)$ under the shared mapping), $p\in D_P$, $s\in D_S$ \\
+
+\hline
+$\varphi,\psi$ & Formulas of $\mathcal{L}_{EH}$ (meta-level symbols) \\
+$g$ & Variable assignment (for formulas with variables) \\
+$\sqsubseteq$ & Subsumption relation between concepts (ontology-level) \\
+\hline
+\end{tabular}
+\end{table}
+
+
+%=======================================DEFINITION 1====================
+\begin{definition}[Domain of Discourse]
+This definition fixes the universe of entities that can appear in e-health statements, ensuring that all variables and constants are well-typed (e.g., patients, substances, conditions, prescribers, and interpreter contexts). This prevents implicit type mismatches in subsequent semantic definitions.
+
+The domain $D$ comprises five disjoint sets:
+\begin{equation}
+D = D_P \uplus D_S \uplus D_M \uplus D_D \uplus D_I
+\end{equation}
+where:
+\begin{itemize}
+    \item $D_P$ denotes patients;
+    \item $D_S$ denotes substances (e.g., drugs and allergens);
+    \item $D_M$ denotes medical conditions;
+    \item $D_D$ denotes physicians (prescribers);
+    \item $D_I$ denotes interpreter contexts used for provenance, freshness, and authorization checks.
+\end{itemize}
+\end{definition}
+
+
+
+%=======================================DEFINITION 2====================
+
+\begin{definition}[E-Health Statement Language $\mathcal{L}_{EH}$]
+This definition specifies the syntax of the e-health statement language used to express clinical facts, authorization constraints, and derived conditions (e.g., renal impairment). It provides the exact set of constructs that will later be evaluated semantically and compiled into ZKP constraints.
+
+Well-formed formulas follow the grammar:
+\begin{IEEEeqnarray}{rCl}
+\varphi ::= \; && \mathit{Al}(p, s) \mid \mathit{Sens}(p,s) \mid \mathit{Rx}(d, p, m) \mid \mathit{Ct}(p, m) \mid \mathit{Cond}(p, c) \notag \\
+&& \mid \; \mathit{Au}(i, a) \mid \neg\varphi \mid \varphi \land \psi \notag \\
+&& \mid \; \varphi \rightarrow \psi \mid \exists x.\varphi \mid \forall x.\varphi
+\end{IEEEeqnarray}
+where $p \in D_P$, $s,m \in D_S$, $c \in D_M$, $d \in D_D$, $i \in D_I$, $a \in Act$, and $x \in D$.
+Quantified variables range over the appropriate sort implied by their predicate position.
+Here, $\mathit{Cond}(p,c)$ captures patient conditions derived from clinical evidence (e.g., an eGFR test), enabling condition-based checks such as
+$\mathit{Cond}(p,\textsf{RenalImpairment}) \rightarrow \mathit{Ct}(p,\textsf{Metformin})$,
+where $\textsf{RenalImpairment} \in D_M$ and $\textsf{Metformin} \in D_S$.
+The predicate $\mathit{Sens}(p,s)$ denotes a laboratory-reported hypersensitivity statement that can be aligned to $\mathit{Al}(p,s)$ under the shared ontology mapping.
+\end{definition}
+
+
+%=======================================DEFINITION 3====================
+
+\begin{definition}[Interpretation Function]
+This definition assigns formal meaning to ontology concepts and predicate symbols by interpreting them over the domain of discourse. It enables model-theoretic reasoning by grounding subsumption and clinical predicates in set- and relation-based semantics.
+
+\small
+Let $D$ be the domain from Def.~1 and let $M=\langle \mathcal{C}, \mathcal{R}, \mathcal{E}, \mathcal{A} \rangle$.
+\begin{enumerate}
+    \item \textbf{Concepts.} Each concept $c\in\mathcal{C}$ denotes a set of domain elements:
+    \begin{equation}
+    \llbracket \cdot \rrbracket^M : \mathcal{C} \rightarrow 2^D .
+    \end{equation}
+
+    \item \textbf{Predicates.} Predicate symbols of $\mathcal{L}_{EH}$ are interpreted as relations:
+    \begin{equation}
+    \begin{array}{l}
+    \mathit{Al}^M \subseteq D_P \times D_S,\qquad
+    \mathit{Cond}^M \subseteq D_P \times D_M,\\
+    \mathit{Ct}^M \subseteq D_P \times D_S,\qquad
+    \mathit{Au}^M \subseteq D_I \times Act,\\
+    \mathit{Rx}^M \subseteq D_D \times D_P \times D_S,\qquad
+    \mathit{Sens}^M \subseteq D_P \times D_S.
+    \end{array}
+    \end{equation}
+
+    \item \textbf{Subsumption.} For $c_1,c_2\in\mathcal{C}$,
+    \begin{equation}
+    c_1 \sqsubseteq c_2 \;\Longleftrightarrow\; \llbracket c_1 \rrbracket^M \subseteq \llbracket c_2 \rrbracket^M .
+    \end{equation}
+\end{enumerate}
+\normalsize
+\end{definition}
+
+%=======================================DEFINITION 4====================
+
+\begin{definition}[Interpreter Validity]
+This definition formalizes when an interpreter context is admissible for truth evaluation, capturing provenance, freshness, and credential-based authorization. It separates trust and governance checks from domain reasoning about clinical concepts.
+
+Context $I = \langle src, ts, cred, auth \rangle$ is valid iff:
+\begin{IEEEeqnarray}{rCl}
+\mathit{Valid}(I) & \iff & (t_{now} - ts) < \Delta_{max} \notag \\
+&& \land \; \mathit{Auth}(cred) \notag \\ 
+&& \land \; src \in \mathcal{S}_{trusted}
+\end{IEEEeqnarray}
+where $\Delta_{max}$ is the maximum data age and $\mathcal{S}_{trusted}$ is the governance-defined trusted source set.
+\end{definition}
+
+%=======================================DEFINITION 5====================
+
+\begin{definition}[Satisfaction Relation]
+This definition specifies the formal truth conditions for e-health statements under a shared semantic model and an authenticated interpreter context. It serves as the semantic interface between clinical reasoning (e.g., contraindication detection) and the ZKP layer, determining which statements are accepted and can be proven without revealing sensitive evidence.
+
+Let $M$ be a semantic model over domain $D$ and let $I$ be an interpreter context.
+Let $g$ denote a variable assignment mapping variables to elements of $D$.
+For formulas with variables, satisfaction is written $M,I,g \models \varphi$ in the standard Tarskian sense; for ground formulas (i.e., with no free variables) we omit $g$ and write $M,I \models \varphi$.
+For ground formulas, the satisfaction relation $M,I \models \varphi$ is defined by:
+\begin{IEEEeqnarray}{rCl}
+M,I \models \mathit{Sens}(p,s) &\iff&
+\mathit{Valid}(I) \land \langle p,s\rangle \in \mathit{Sens}^M \notag\\[2pt]
+M,I \models \mathit{Al}(p,s) &\iff&
+\mathit{Valid}(I) \land \langle p,s\rangle \in \mathit{Al}^M \notag\\[2pt]
+M,I \models \mathit{Cond}(p,c) &\iff&
+\mathit{Valid}(I) \land \langle p,c\rangle \in \mathit{Cond}^M \notag\\[2pt]
+M,I \models \mathit{Ct}(p,m) &\iff&
+\mathit{Valid}(I) \land \langle p,m\rangle \in \mathit{Ct}^M \notag\\[2pt]
+M,I \models \mathit{Rx}(d,p,m) &\iff&
+\mathit{Au}(I,\textsf{prescribe}) \notag\\
+&& \land\; M,I \not\models \mathit{Ct}(p,m) \notag\\[2pt]
+M,I \models \neg\varphi &\iff& M,I \not\models \varphi \notag\\
+M,I \models \varphi \land \psi &\iff& (M,I \models \varphi)\land(M,I \models \psi) \notag\\
+M,I \models \varphi \rightarrow \psi &\iff& M,I \not\models \varphi\ \lor\ M,I \models \psi.
+\end{IEEEeqnarray}
+
+\end{definition}
+
+%=======================================DEFINITION 6====================
+
+\begin{definition}[Semantic Equivalence]
+This definition formalizes when two statements have the same meaning under the shared model, even if they differ syntactically. It enables semantic consensus by allowing participants to agree on outcomes based on meaning rather than representation.
+
+Let $I \in D_I$ be an interpreter context and let $g:\mathsf{Var}\rightarrow D$ be a variable assignment mapping first-order variables to domain elements.
+Formulas $\varphi_1$ and $\varphi_2$ are semantically equivalent under $M$, written $\varphi_1 \equiv_M \varphi_2$, iff:
+\begin{equation}
+\forall I \in D_I \; \forall g:\mathsf{Var}\rightarrow D:\;
+\bigl(M, I, g \models \varphi_1 \iff M, I, g \models \varphi_2\bigr).
+\end{equation}
+For ground formulas (i.e., formulas without variables), we omit $g$ and write $M, I \models \varphi$.
+\end{definition}
+
+
+\subsubsection{Application to the Running Case}
+\label{sec:formal-running-case}
+
+We instantiate the formal definitions using the scenario from Section~\ref{ss:rc}, 
+demonstrating prescription validation with both allergy-based and laboratory-based 
+contraindication checks. The clinical constraints used in this example are grounded 
+in established medical guidelines: $\beta$-lactam cross-reactivity follows the 
+Canadian Society of Allergy and Clinical Immunology position statement~\cite{csaci2020betalactam}, 
+while metformin renal thresholds conform to FDA labeling requirements~\cite{fda2016metformin} 
+and the American Diabetes Association Standards of Care~\cite{ada2025ckd}.
+
+\textbf{Clinical context.} A physician prescribes Metformin for a patient with type~2 diabetes who has a documented Penicillin allergy. The prescription validation must verify: (i)~no allergy-based contraindication exists between the patient's allergies and the prescribed medication, and (ii)~the patient's renal function (eGFR) meets the threshold required for Metformin (eGFR~$\geq 30$~mL/min/1.73~m$^2$, per FDA guidelines).
+
+\textbf{Model instantiation.} The semantic model $M$ includes:
+\begin{IEEEeqnarray}{rCl}
+\mathcal{C} &=& \{\mathit{Pen}, \mathit{Amox}, \mathit{Met}, \beta\text{-}\mathit{lac}, \ldots\} \\
+\mathcal{A} &=& \{\mathit{Pen} \sqsubseteq \beta\text{-}\mathit{lac}, \; \mathit{Amox} \sqsubseteq \beta\text{-}\mathit{lac}\}
+\end{IEEEeqnarray}
+where $\mathit{Pen}$, $\mathit{Amox}$, $\mathit{Met}$, and $\beta$-$\mathit{lac}$ abbreviate Penicillin, Amoxicillin, Metformin, and $\beta$-lactam respectively. Note that $\mathit{Met} \not\sqsubseteq \beta$-$\mathit{lac}$ as Metformin is an antidiabetic agent unrelated to $\beta$-lactam antibiotics.
+
+\textbf{Interpreter contexts.} The three participating organizations define distinct contexts:
+\begin{IEEEeqnarray}{rCl}
+I_H &=& \langle \mathit{Hosp}, t_1, c_H, \{\mathit{prescribe}\} \rangle \\
+I_L &=& \langle \mathit{Lab}, t_2, c_L, \{\mathit{report}\} \rangle \\
+I_P &=& \langle \mathit{Pharm}, t_3, c_P, \{\mathit{dispense}\} \rangle
+\end{IEEEeqnarray}
+
+\textbf{Semantic conflict resolution.} The hospital EHR records:
+\begin{equation}
+\varphi_H = \mathit{Al}(\mathit{pat}_1, \mathit{Pen})
+\end{equation}
+The laboratory system uses local terminology:
+\begin{equation}
+\varphi_L = \mathit{Sens}(\mathit{pat}_1, \beta\text{-}\mathit{lac})
+\end{equation}
+
+These statements appear syntactically different but refer to the same clinical fact. Using the governance-approved alignment axiom~\eqref{eq:bridge-sens-al}, the two representations can be rewritten into the same predicate form prior to semantic evaluation. Combined with the subsumption axiom $\mathit{Pen} \sqsubseteq \beta$-$\mathit{lac}$, we derive:
+ 
+\begin{equation}
+\varphi_H \equiv_M \varphi_L
+\end{equation}
+This equivalence enables consistent reasoning across heterogeneous data sources without requiring syntactic harmonization.
+
+\textbf{Invalid prescription (contraindication detected).} The physician attempts to prescribe Amoxicillin:
+\begin{equation}
+\varphi_{Rx}^{-} = \mathit{Rx}(\mathit{doc}_1, \mathit{pat}_1, \mathit{Amox})
+\end{equation}
+Evaluation proceeds as follows:
+\begin{enumerate}
+    \item From $\mathcal{I}$: $\langle \mathit{pat}_1, \mathit{Pen} \rangle \in \mathit{Al}^M$
+    \item From $\mathcal{A}$: $\mathit{Amox} \sqsubseteq \beta$-$\mathit{lac}$ and $\mathit{Pen} \sqsubseteq \beta$-$\mathit{lac}$
+    \item Since both share the superclass $\beta$-$\mathit{lac}$, by Def.~5:
+    \begin{equation}
+    M, I_H \models \mathit{Ct}(\mathit{pat}_1, \mathit{Amox})
+    \end{equation}
+    \item By Def.~5, the contraindication negates validity:
+    \begin{equation}
+    M, I_H \not\models \varphi_{Rx}^{-}
+    \end{equation}
+\end{enumerate}
+The prescription is \textit{rejected}. The Semantic Interpretation Layer flags this outcome for governance review, and no ZKP is generated for an invalid prescription.
+
+\textbf{Valid prescription (no contraindication).} Consider an alternative where the physician prescribes Metformin:
+\begin{equation}
+\varphi_{Rx}^{+} = \mathit{Rx}(\mathit{doc}_1, \mathit{pat}_1, \mathit{Met})
+\end{equation}
+Evaluation proceeds:
+\begin{enumerate}
+    \item From $\mathcal{A}$: $\mathit{Met} \not\sqsubseteq \beta$-$\mathit{lac}$ (no subsumption relation exists)
+    \item No substance $s$ exists such that:
+    \begin{equation}
+    M, I_H \models \mathit{Al}(\mathit{pat}_1, s) \land \mathit{Met} \sqsubseteq s
+    \end{equation}
+    \item By Def.~5:
+    \begin{equation}
+    M, I_H \not\models \mathit{Ct}(\mathit{pat}_1, \mathit{Met})
+    \end{equation}
+    \item Given $\mathit{Au}(I_H, \mathit{prescribe})$ holds and no contraindication exists, by Def.~5:
+    \begin{equation}
+    M, I_H \models \varphi_{Rx}^{+}
+    \end{equation}
+\end{enumerate}
+The prescription is \textit{accepted}. The semantic outcome proceeds to the Proof Generation Layer, where a ZKP attesting to prescription validity is constructed without revealing patient allergy data.
+
+\textbf{Summary.} Table~\ref{tab:running-case-summary} summarizes the evaluation scenarios demonstrating the formal semantics applied to the running case.
+
+\begin{table}[htbp]
+\centering
+\caption{Running Case Evaluation Summary}
+\label{tab:running-case-summary}
+\begin{tabular}{lll}
+\hline
+\textbf{Scenario} & \textbf{Result} & \textbf{Action} \\
+\hline
+Conflict resolution & $\varphi_H \equiv_M \varphi_L$ & Aligned via DKG \\
+Amoxicillin Rx & $M, I_H \not\models \varphi_{Rx}^{-}$ & Rejected \\
+Metformin Rx & $M, I_H \models \varphi_{Rx}^{+}$ & Accepted, ZKP generated \\
+\hline
+\end{tabular}
+\end{table}
+
+These three scenarios demonstrate how the formal semantic framework handles: (i) heterogeneous terminology through ontology-based equivalence, (ii) safety-critical rejection through axiom-driven inference, and (iii) successful validation enabling privacy-preserving proof generation. The formal definitions from Section~\ref{sec:formal-definitions} provide the rigorous foundation required for subsequent transformation into zk-SNARK circuits in Section~\ref{s:rq3}.
+
+
+%==============================SECTION 3=================================================
+\section{Privacy-aware consensus algorithm requirements}
+\label{s:rq1}
+
+Conventional consensus protocols (e.g., PoW, PBFT) are not designed for regulated, cross-organizational e-health workflows and therefore fail to satisfy essential requirements such as strict privacy protection, verifiable accountability, and compliance-aware decision making. In this paper, the object of agreement is not a numeric aggregation result but the \emph{accept/reject outcome} of semantic statement evaluation (i.e., whether $M,I,g \models \varphi$ holds under governance-defined policies). Zero-knowledge proofs (ZKPs) provide a cryptographically rigorous mechanism to validate such outcomes while keeping patient-specific evidence confidential.
+
+Relevant requirements that apply to the running case:
+\begin{itemize}
+    \item \textbf{R1 — Privacy of patient evidence (witness confidentiality).}
+    Patient-specific records (allergies, lab results, medications) must remain off-chain and must not be disclosed to governance participants or other organizations; only privacy-preserving commitments and ZK proofs are revealed.
+
+    \item \textbf{R2 — Statement-level verifiability (semantic evaluation correctness).}
+    Participants must be able to verify that the published decision corresponds to a correct evaluation of the intended statement under the shared semantic model and interpreter context (i.e., the system proves the correctness of $M,I,g \models \varphi$ without exposing evidence).
+
+    \item \textbf{R3 — Binding to the intended statement (no proof/decision substitution).}
+    Proofs and recorded outcomes must be cryptographically bound to the evaluated statement $\varphi$ (e.g., via $\mathit{stmt\_hash}=H(\varphi)$) so that a proof for one statement cannot be reused for another.
+
+    \item \textbf{R4 — Replay protection and freshness.}
+    The system must prevent reuse of stale or duplicated evidence/contexts across workflow instances by binding timestamps/nonces into the committed statement and enforcing governance-defined freshness constraints (e.g., $\Delta_{\max}$ for lab values).
+
+    \item \textbf{R5 — Authorization and role separation.}
+    Only authorized interpreters may assert or evaluate specific action statements (e.g., prescribing). Authorization must be verifiable and separated from identity authentication, reflecting governance policies rather than implicit trust.
+
+    \item \textbf{R6 — Minimal on-chain disclosure (metadata minimization).}
+    On-chain public inputs should be limited to a minimal tuple (e.g., $\langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle$). Sensitive attributes such as medication identity should not be public by default to reduce linkability across prescriptions.
+
+    \item \textbf{R7 — Accountability and auditability of decisions.}
+    The governance layer must maintain an immutable decision registry linking $\mathit{stmt\_hash}$ to the accept/reject outcome and timestamp, enabling after-the-fact accountability without revealing patient data.
+
+    \item \textbf{R8 — Dispute handling and escalation.}
+    The protocol must define a verifiable escalation path for contested or ambiguous outcomes (e.g., insufficient context, semantic mismatch, policy divergence), with controlled off-chain resolution under organizational procedures.
+
+    \item \textbf{R9 — Robustness against collusion and malicious participants.}
+    Security guarantees must hold under partial collusion (e.g., a subset of organizations or infrastructure nodes). Governance acceptance should rely on proof verification and quorum/threshold policies rather than trusting any single interpreter or prover.
+
+    \item \textbf{R10 — Interoperability under semantic heterogeneity.}
+    The mechanism must tolerate heterogeneous encodings and local terminologies (e.g., $\mathit{Al}$ vs.\ $\mathit{Sens}$) by supporting governance-approved alignment artifacts (e.g., bridge axioms/mappings) so that statement meaning, not syntax, drives acceptance.
+\end{itemize}
+
+To connect these requirements to the architecture in Section~\ref{s:rq2}, witness privacy and replay/freshness (R1, R4) are enforced off-chain in the Semantic Interpretation and Proof Generation layers; statement binding and verifiability (R2, R3) are enforced by compiling the satisfaction relation into zk-SNARK constraints and committing to $\varphi$ via $\mathit{stmt\_hash}$; and accountability, dispute handling, and collusion robustness (R7--R9) are enforced by the on-chain Governance Layer through proof verification, threshold acceptance, and logged decisions.
+
+
+
+%==============================SECTION 4=================================================
+
+\section{Architectural and Governance Mechanisms for Privacy-Preserving Semantic Consensus}
+\label{s:rq2}
+
+This section addresses the second research question (RQ2) by introducing an architectural and governance framework for achieving semantic consensus over privacy-sensitive medical statements in decentralized e-health environments. The architecture operationalizes a Tarskian notion of semantic truth by explicitly separating semantic interpretation, cryptographic proof generation, and governance-based acceptance. Semantic truth conditions are derived off-chain, verified through ZKPs, and subsequently accepted or rejected by a governance mechanism without exposing medical data or relying on a trusted intermediary. Fig.~\ref{f:arch} illustrates the layered structure of the architecture and the interaction between its components.
+
+\subsection{Design Scope and Architectural Principles}
+The architecture is designed to achieve consensus over \emph{semantic statements} rather than over raw medical data. To this end, it follows three core principles: (i) separation of concerns between data provision, semantic interpretation, proof generation, and governance; (ii) off-chain processing of sensitive data and semantic evaluation; and (iii) governance-level acceptance based solely on verifiable cryptographic evidence. These principles ensure interoperability across heterogeneous healthcare systems while maintaining privacy and minimizing trust assumptions.
+
+\subsection{Layered Architecture Overview}
+The proposed framework is organized into four conceptual layers, each with clearly defined responsibilities, as summarized in Table~\ref{tab:architecture_layers} and illustrated in Figure~\ref{f:arch}.
+
+For clarity of trust boundaries and privacy exposure, Table~\ref{tab:disclosure-matrix}
+summarizes which data and metadata are visible at each architectural layer.
+
+\begin{table}[tb]
+\centering
+\caption{Data/metadata disclosure matrix (what each layer can access).}
+\label{tab:disclosure-matrix}
+\small
+\begin{tabular}{p{2.7cm} p{5.3cm}}
+\hline
+\textbf{Layer} & \textbf{Visible data / artifacts} \\
+\hline
+Domain Systems &
+Raw clinical records (EHR/PHR), laboratory measurements, local identifiers, and local consent/authorization artifacts. \\
+Semantic Interpretation (off-chain) &
+Consent-scoped evidence needed to evaluate $\varphi$; shared ontology and axioms anchored in the DKG; interpreter context $I$; derived constraints $\Phi$ and the evaluation outcome. \\
+Proof Generation (off-chain) &
+Constraints $\Phi$; private witness inputs derived from evidence; produces proof $\pi$ and public inputs $\mathit{pub}$. \\
+Governance (on-chain) &
+Only $(\pi,\mathit{pub})$ and verification/acceptance records, where $\mathit{pub}=\langle \mathit{stmt\_hash},\mathit{outcome},\mathit{timestamp}\rangle$ and the medication identity is committed only inside $\mathit{stmt\_hash}$. \\
+\hline
+\end{tabular}
+\end{table}
+
+
+
+\subsubsection{Domain Systems Layer}
+The Domain Systems Layer comprises heterogeneous healthcare information systems, including patient-controlled systems, diagnostic and laboratory systems, and healthcare provider systems. These systems act solely as sources of raw medical data (e.g., EHR and PHR records) and remain isolated from semantic interpretation, proof generation, and governance decisions.
+
+\subsubsection{Semantic Interpretation Layer (off-chain)}
+The Semantic Interpretation Layer operates over a shared semantic model and derives the truth conditions of domain-specific medical statements prior to cryptographic proof generation and governance-based acceptance. This layer implements a Tarskian, model-theoretic notion of semantic truth, where statements \(\varphi\) are evaluated with respect to a semantic model \(M\) and an interpreter context \(I\).
+
+The layer comprises a decentralized knowledge graph (DKG) representing the semantic model \(M\), a semantic data collector and validator responsible for preparing and validating interpreted domain data, a hypothesis checker acting as the semantic interpreter, and a multi-factor self-sovereign authentication mechanism (MFSSIA) that establishes the identity of participating entities. The DKG provides structured semantic context and relationships required for interpretation, but does not perform reasoning or truth evaluation itself.
+
+Semantic interpretation is performed exclusively by the hypothesis checker, which evaluates whether the truth conditions \(M, I \models \varphi\) hold for a given statement. This layer derives semantic truth conditions but does not enforce outcomes, assert correctness, or make binding decisions. MFSSIA provides verifiable identity claims, while authorization to act as a semantic interpreter is contextually evaluated within the semantic interpretation layer based on governance-defined policies rather than being granted by the authentication mechanism itself. 
+
+\textbf{Deployment note.} In practice, the hypothesis checker is run by the organization responsible for clinical decision-making in the workflow (e.g., the hospital for prescriptions). The prover can be executed either by the same organization or by a delegated off-chain proving service that receives only constraint descriptions and private witness inputs. In all cases, the on-chain layer trusts only the proof, not the operator.
+
+
+MFSSIA provides multi-factor self-sovereign authentication and supplies verifiable identity claims. Semantic truth is evaluated in a Tarskian sense prior to any cryptographic proof generation.
+
+\subsubsection{Proof Generation Layer (off-chain)}
+\label{sec:proof-generation-layer}
+
+The Proof Generation Layer bridges semantic interpretation and governance verification by transforming semantic evaluation results into cryptographic proofs. This layer operates entirely off-chain and has no direct access to raw medical data—it receives only abstract semantic constraints from the Semantic Interpretation Layer.
+
+\textbf{Responsibilities.} The layer performs three core functions:
+\begin{enumerate}
+    \item \textit{Constraint encoding}: Transforms semantic constraints $\Phi$ derived from the evaluation $M, I \models \varphi$ into an arithmetic circuit $C$ compatible with zk-SNARK proving systems.
+    \item \textit{Witness construction}: Assembles private inputs (witness) from semantic evaluation results, including truth values, authorization flags, and constraint satisfaction indicators.
+    \item \textit{Proof generation}: Executes the SNARK prover algorithm to produce a succinct, non-interactive proof $\pi$ attesting to correct semantic evaluation.
+\end{enumerate}
+
+\textbf{Input/Output specification.} Table~\ref{tab:proof-layer-io} specifies the inputs and outputs of the Proof Generation Layer.
+
+\begin{table}[htbp]
+\centering
+\caption{Proof Generation Layer Input/Output Specification}
+\label{tab:proof-layer-io}
+\begin{tabular}{p{1.5cm}p{2.8cm}p{2.8cm}}
+\hline
+\textbf{Type} & \textbf{Element} & \textbf{Description} \\
+\hline
+\multirow{3}{*}{Input} 
+& $\Phi$ & Semantic constraints \\
+& $\mathit{eval}$ & Evaluation result \\
+& $I$ & Interpreter context \\
+\hline
+\multirow{3}{*}{Output} 
+& $\pi$ & ZKP \\
+& $\mathit{pub}$ & Public inputs \\
+& $\mathit{meta}$ & Proof metadata \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Circuit structure.} The arithmetic circuit $C$ encodes the logical structure of semantic evaluation. For prescription validation (Definition~5), the circuit verifies:
+\begin{IEEEeqnarray}{rCl}
+C(w) = 1 & \iff & \mathit{auth\_check}(w) = 1 \notag \\
+&& \land \; \mathit{contra\_check}(w) = 0
+\end{IEEEeqnarray}
+where $\mathit{auth\_check}$ verifies interpreter authorization and $\mathit{contra\_check}$ verifies absence of contraindications. The circuit structure mirrors the inductive definition of the satisfaction relation but operates over finite field arithmetic~\cite{zkp-blockchain-2024}.
+
+\textbf{Witness structure.} The witness $w$ comprises private inputs known only to the prover:
+\begin{equation}
+w = \langle w_{\mathit{auth}}, w_{\mathit{allergy}}, w_{\mathit{subsumption}}, w_{\mathit{eval}} \rangle
+\end{equation}
+where:
+\begin{itemize}
+    \item $w_{\mathit{auth}}$: Authorization credentials and validity flags
+    \item $w_{\mathit{allergy}}$: Patient allergy identifiers (encoded)
+    \item $w_{\mathit{subsumption}}$: Verifiable subsumption evidence that $m \sqsubseteq s$ holds under the ontology axioms $\mathcal{A}$ (e.g., a subsumption path certificate and membership proofs against a public commitment to $\mathcal{A}$)
+
+    \item $w_{\mathit{eval}}$: Intermediate evaluation results
+\end{itemize}
+
+The public commitment to $\mathcal{A}$ is maintained by the governance layer and updated only via approved ontology revisions.
+
+\textbf{Public inputs.} The public inputs $\mathit{pub}$ are revealed to verifiers:
+\begin{equation}
+\mathit{pub} = \langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle .
+\end{equation}
+Here, $\mathit{stmt\_hash}=H(\varphi)$ is a cryptographic commitment to the evaluated statement, $\mathit{outcome}\in\{0,1\}$ denotes rejection/acceptance, and $\mathit{timestamp}$ establishes temporal validity for audit purposes. In this design, the medication identity is \emph{not} disclosed on-chain; it is included only within $\varphi$ and therefore only within the commitment $\mathit{stmt\_hash}$, reducing linkability across prescriptions. If required for dispute resolution or compliance checks, $\varphi$ can be disclosed off-chain to authorized parties under organizational procedures (out of scope).
+
+
+
+
+\textbf{Privacy guarantees.} The zero-knowledge property ensures that proof $\pi$ reveals nothing beyond the public inputs~\cite{zksnark-survey-2024}. Specifically:
+\begin{itemize}
+    \item Patient identity and allergy details remain hidden
+    \item Specific medications in patient history are not disclosed
+    \item Internal authorization logic is not exposed
+    \item Only the binary outcome (valid/invalid) is revealed
+\end{itemize}
+This aligns with healthcare privacy requirements where verification must occur without exposing protected health information~\cite{zkp-healthcare-2023, babu2024secure}.
+
+\textbf{Proof properties.} The generated proof $\pi$ satisfies standard zk-SNARK security properties~\cite{zkp-blockchain-2024}:
+\begin{itemize}
+    \item \textit{Completeness}: If $M, I \models \varphi$, an honest prover can always generate a valid proof
+    \item \textit{Soundness}: A computationally bounded adversary cannot generate a valid proof for $M, I \not\models \varphi$
+    \item \textit{Zero-knowledge}: The proof reveals no information beyond $\mathit{pub}$
+    \item \textit{Succinctness}: Proof size is $O(1)$ independent of witness size
+\end{itemize}
+
+\textbf{Protocol selection.} The architecture supports multiple zk-SNARK constructions. Table~\ref{tab:zkp-protocols} compares suitable protocols based on healthcare governance requirements.
+
+\begin{table}[htbp]
+\centering
+\caption{Comparison of zk-SNARK Protocols for Healthcare}
+\label{tab:zkp-protocols}
+\begin{tabular}{p{1.6cm}p{1.4cm}p{1.4cm}p{2.2cm}}
+\hline
+\textbf{Protocol} & \textbf{Setup} & \textbf{Proof Size} & \textbf{Use Case} \\
+\hline
+Groth16~\cite{groth2016} & Trusted & 128 B & Minimal on-chain cost \\
+Halo2~\cite{halo2-2022} & None & 5--10 KB & No trust assumptions \\
+Nova~\cite{nova-2022} & None & Variable & Recursive proofs \\
+Plonky2~\cite{plonky2-2022} & None & 40 KB & Fast proving \\
+HyperPlonk~\cite{hyperplonk-2023} & Universal & 10 KB & Complex circuits \\
+\hline
+\end{tabular}
+\end{table}
+
+For healthcare applications requiring minimal trust assumptions, recent constructions such as Halo2~\cite{halo2-2022} and Nova~\cite{nova-2022} are preferred due to elimination of trusted setup ceremonies and associated security risks. These protocols achieve trustless verification through accumulation schemes and folding techniques~\cite{sakwa5293078survey}.
+
+For governance deployments where on-chain verification cost is critical, Groth16~\cite{groth2016} remains widely adopted due to its minimal proof size (128 bytes) and constant-time verification, despite requiring per-circuit trusted setup. Recent production systems demonstrate Groth16's viability for healthcare applications~\cite{babu2024secure}.
+
+Folding-based approaches such as Nova~\cite{nova-2022} and SuperNova~\cite{supernova-2023} enable efficient incremental verification, making them suitable for long-running clinical workflows where proofs must be composed across multiple evaluation steps. HyperPlonk~\cite{hyperplonk-2023} offers linear-time proving with support for high-degree custom gates, beneficial for encoding complex semantic constraints.
+
+\textbf{Healthcare-specific considerations.} Recent research identifies key requirements for ZKP deployment in healthcare contexts~\cite{zkp-healthcare-2023, babu2024secure}:
+\begin{itemize}
+    \item \textit{Regulatory alignment}: Proof systems must support audit trails compatible with HIPAA and GDPR requirements
+    \item \textit{Verifier efficiency}: Healthcare governance nodes may have limited computational resources, favoring protocols with fast verification
+    \item \textit{Long-term security}: Post-quantum considerations favor hash-based constructions (STARKs) for data requiring extended protection periods
+    \item \textit{Interoperability}: Universal setup protocols (PLONK variants) enable circuit updates without new ceremonies
+\end{itemize}
+
+\textbf{Interface with adjacent layers.} The Proof Generation Layer:
+\begin{itemize}
+    \item \textit{Receives from} Semantic Interpretation Layer: constraints $\Phi$, evaluation result, interpreter context $I$
+    \item \textit{Provides to} Governance Layer: proof $\pi$, public inputs $\mathit{pub}$, proof metadata $\mathit{meta}$
+\end{itemize}
+
+No medical data crosses into this layer—only abstract constraint representations derived from semantic evaluation. This separation ensures that proof generation can be performed by semi-trusted infrastructure without compromising patient privacy. Technical details of circuit construction and witness generation are provided in Section~\ref{s:rq3}.
+
+\subsubsection{Governance Layer (on-chain)}
+\label{sec:governance-layer}
+
+The Governance Layer implements decentralized decision-making over verified semantic outcomes. Operating entirely on-chain, this layer receives cryptographic proofs from the Proof Generation Layer and collectively determines whether semantic outcomes should be accepted for cross-organizational workflows. The layer ensures that governance decisions are transparent, auditable, and independent of any single trusted party.
+
+\textbf{Responsibilities.} The Governance Layer performs four core functions:
+\begin{enumerate}
+    \item \textit{Proof verification}: Validates ZKPs using on-chain verifier contracts
+    \item \textit{Collective decision-making}: Aggregates governance participant votes on verified outcomes
+    \item \textit{Outcome recording}: Immutably logs accepted/rejected decisions with metadata
+    \item \textit{Escalation handling}: Routes unresolved or contested outcomes to higher-level arbitration
+\end{enumerate}
+
+\textbf{DAO structure.} The governance mechanism is instantiated as a healthcare-specific Decentralized Autonomous Organization (DAO) with role-based participation. Table~\ref{tab:dao-roles} defines the governance roles and their authorities.
+
+\begin{table}[htbp]
+\centering
+\caption{DAO Governance Roles and Authorities}
+\label{tab:dao-roles}
+\begin{tabular}{p{1.8cm}p{2.2cm}p{2.8cm}}
+\hline
+\textbf{Role} & \textbf{Authority} & \textbf{Requirements} \\
+\hline
+Validator & Verify proofs & Staked tokens, uptime \\
+Voter & Accept/reject & Organizational member \\
+Arbiter & Resolve disputes & Multi-org consensus \\
+Observer & Audit only & Public read access \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{Verification protocol.} Upon receiving proof $\pi$ and public inputs $\mathit{pub} = \langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle$, the on-chain verifier executes:
+\begin{equation}
+\mathit{result} = \mathit{Verify}_{vk}(\pi, \mathit{pub})
+\end{equation}
+where $vk$ is the verification key corresponding to the circuit. For Groth16-based proofs, verification requires three pairing operations with $O(1)$ complexity~\cite{groth2016}. The verification result is a binary value:
+\begin{equation}
+\mathit{result} \in \{0, 1\} \equiv \{\mathit{invalid}, \mathit{valid}\}
+\end{equation}
+
+\textbf{Acceptance protocol.} A verified proof ($\mathit{result} = 1$) proceeds to collective acceptance. The acceptance protocol implements weighted voting among authorized governance participants:
+\begin{equation}
+\mathit{Accept}(\pi) \iff \sum_{i \in \mathcal{V}} w_i \cdot v_i \geq \theta \cdot \sum_{i \in \mathcal{V}} w_i
+\end{equation}
+where $\mathcal{V}$ is the set of eligible voters, $w_i$ is the governance-defined voting weight of voter $i$, $v_i \in \{0, 1\}$ is the vote, and $\theta \in (0.5, 1]$ is the acceptance threshold. For healthcare workflows requiring high assurance, $\theta = 0.67$ (supermajority) is recommended.
+Weights $w_i$ are stored in an on-chain participant registry and updated only through governance-approved policy changes, which are immutably recorded on-chain.
+
+
+\textbf{Voting mechanisms.} The governance layer supports multiple voting strategies depending on workflow criticality:
+\begin{itemize}
+    \item \textit{Optimistic acceptance}: Proof auto-accepted after timeout unless challenged; suitable for routine prescriptions
+    \item \textit{Active voting}: Explicit votes required from designated validators; suitable for high-risk decisions
+    \item \textit{Multi-signature}: Threshold of organizational signatures required; suitable for cross-institutional data sharing
+\end{itemize}
+
+\textbf{Decision outcomes.} Table~\ref{tab:governance-outcomes} specifies the possible governance outcomes and subsequent actions.
+
+\begin{table}[htbp]
+\centering
+\caption{Governance Decision Outcomes}
+\label{tab:governance-outcomes}
+\begin{tabular}{p{1.8cm}p{2.0cm}p{2.8cm}}
+\hline
+\textbf{Outcome} & \textbf{Condition} & \textbf{Action} \\
+\hline
+Accepted & $\mathit{Verify}=1 \land \mathit{Vote} \geq \theta$ & Workflow proceeds \\
+Rejected & $\mathit{Verify}=0$ & Logged, no retry \\
+Contested & $\mathit{Verify}=1 \land \mathit{Vote} < \theta$ & Escalate to arbiters \\
+Timeout & No quorum reached & Re-submit or escalate \\
+\hline
+\end{tabular}
+\end{table}
+
+\textbf{On-chain data structures.} The governance layer maintains the following on-chain state:
+\begin{itemize}
+    \item \textit{Decision registry}: Mapping of $\mathit{stmt\_hash} \rightarrow (\mathit{outcome}, \mathit{timestamp}, \mathit{votes})$
+    \item \textit{Participant registry}: Authorized voters with roles and weights
+    \item \textit{Verification keys}: Circuit-specific $vk$ for each statement type
+    \item \textit{Audit log}: Immutable record of all verification attempts and decisions
+\end{itemize}
+
+\textbf{Privacy preservation.} The governance layer operates without access to:
+\begin{itemize}
+    \item Raw patient data (confined to Domain Systems Layer)
+    \item Semantic model or interpretation logic (confined to Semantic Interpretation Layer)
+    \item Witness values used in proof generation (confined to Proof Generation Layer)
+\end{itemize}
+Governance participants observe only $(\pi, \mathit{pub})$ and the binary verification result. This separation ensures GDPR compliance by design—no personal health information is processed on-chain~\cite{Angurala2025, Amin2024}.
+
+\textbf{Escalation and dispute resolution.} When consensus cannot be reached ($\mathit{Vote} < \theta$) or outcomes are contested, the governance layer initiates escalation:
+\begin{enumerate}
+    \item Contested outcome is flagged with $\mathit{status} = \mathit{DISPUTED}$
+    \item Arbiter committee (cross-organizational representatives) is notified
+    \item Off-chain deliberation may access only selectively disclosed artifacts permitted by consent/policy (e.g., signed attestations or committed evidence references), under strict access control
+    \item Arbiter decision is recorded on-chain as final resolution
+\end{enumerate}
+Escalation preserves audit trails while enabling human judgment for edge cases that automated semantic consensus cannot resolve.
+
+\textbf{Gas efficiency and scalability.} On-chain verification costs are minimized through:
+\begin{itemize}
+    \item Succinct proofs (128 bytes for Groth16) reduce calldata costs
+    \item Batched verification for multiple statements in a single transaction
+    \item Layer-2 deployment options for high-throughput scenarios~\cite{zksnark-survey-2024}
+\end{itemize}
+
+\textbf{Interface with adjacent layers.} The Governance Layer:
+\begin{itemize}
+    \item \textit{Receives from} Proof Generation Layer: proof $\pi$, public inputs $\mathit{pub}$, and metadata
+    \item \textit{Provides to} Interorganizational Workflow: acceptance decision, audit reference, and timestamp
+\end{itemize}
+
+The accepted semantic outcome enables the interorganizational process to proceed with cryptographic assurance that the underlying medical statement has been correctly evaluated without exposing sensitive data.
+
+\subsection{Actors, Roles, and Trust Boundaries}
+The architecture distinguishes four primary roles: domain data providers, semantic interpreters, proof generators, and governance participants. Each role is associated with explicit responsibilities and limitations.
+
+Domain data providers supply raw medical data but cannot assert semantic truth or influence governance decisions. Semantic interpreters evaluate the truth conditions of medical statements but cannot accept or enforce outcomes. Proof generators construct cryptographic proofs but have no authority over interpretation or acceptance. Governance participants collectively accept or reject outcomes based on proof verification but cannot access medical data or the logic of semantic interpretation.
+
+Trust boundaries are explicitly enforced between layers: raw data remain confined to domain and semantic layers, semantic interpretation is performed off-chain by authenticated actors, and only cryptographic proofs and accepted outcomes cross into the governance layer. This separation ensures that no single entity can unilaterally assert semantic truth or control decision outcomes.
+
+\subsection{End-to-End Semantic Consensus Workflow}
+\label{sec:workflow}
+
+Figure~\ref{f:arch} depicts the end-to-end workflow for achieving semantic consensus over medical statements. The process begins with the formulation of a hypothesis within an interorganizational workflow. Authorized interpreters evaluate the hypothesis against the semantic model using validated data, extract semantic constraints, and generate a ZKP. The governance layer verifies the proof and collectively accepts or rejects the resulting semantic outcome, which then informs subsequent interorganizational actions.
+
+The workflow is explained using the running e-health case introduced in Section~\ref{ss:rc}, where a digital prescription is prepared through collaboration between a hospital, a diagnostic laboratory, and a pharmacy. We reference the formal definitions from Section~\ref{sec:formal-definitions} throughout.
+
+\begin{enumerate}
+    \item \textbf{Hypothesis formulation.} The interorganizational workflow initiates a hypothesis $\varphi$ representing a domain-specific medical statement, formulated according to predefined statement schemas in $\mathcal{L}_{EH}$. In the running case:
+    \begin{equation}
+    \varphi_{Rx} = \mathit{Rx}(\mathit{doc}_1, \mathit{pat}_1, m)
+    \end{equation}
+    where $m$ is the proposed medication.
+    
+    \item \textbf{Interpreter authentication.} The entity responsible for semantic interpretation authenticates through MFSSIA, establishing verifiable identity claims. This produces the interpreter context:
+    \begin{equation}
+    I_H = \langle \mathit{Hosp}, t_1, c_H, \{\mathit{prescribe}\} \rangle
+    \end{equation}
+    
+    \item \textbf{Contextual authorization.} The Semantic Interpretation Layer evaluates whether $\mathit{Au}(I_H, \mathit{prescribe})$ holds according to governance-defined policies. Authorization is contextually evaluated rather than implicitly granted by authentication.
+    
+    \item \textbf{Hypothesis-driven data acquisition.} The hypothesis checker derives data requirements from $\varphi$. For prescription validation, this includes:
+    \begin{itemize}
+        \item Patient allergy records: $\{s \mid \langle \mathit{pat}_1, s \rangle \in \mathit{Al}^M\}$
+        \item Subsumption relations: $\{(c_1, c_2) \mid c_1 \sqsubseteq c_2\}$ from $\mathcal{A}$
+        \item Medication classification for $m$
+    \end{itemize}
+    
+    \item \textbf{Semantic data collection and validation.} The semantic data collector retrieves required data through the DKG. The semantic data validator verifies:
+    \begin{equation}
+    \mathit{Valid}(I) \iff (t_{now} - ts) < \Delta_{max} \land \mathit{Auth}(cred)
+    \end{equation}
+    Raw EHR and PHR data remain confined to this layer.
+    
+    \item \textbf{Semantic model access.} Validated data are interpreted within the DKG, which provides the semantic model $M = \langle \mathcal{C}, \mathcal{R}, \mathcal{E}, \mathcal{A} \rangle$, while the interpreter context $I$ is provided separately. The knowledge graph supplies structured relationships but does not perform reasoning.
+    
+    \item \textbf{Semantic truth evaluation.} The hypothesis checker evaluates $M, I \models \varphi$ following Definition~5. For the running case with $m = \mathit{Amox}$:
+    \begin{IEEEeqnarray}{rCl}
+    M, I_H &\models& \mathit{Al}(\mathit{pat}_1, \mathit{Pen}) \\
+    M, I_H &\models& \mathit{Ct}(\mathit{pat}_1, \mathit{Amox}) \\
+    M, I_H &\not\models& \varphi_{Rx}^{-}
+    \end{IEEEeqnarray}
+    For $m = \mathit{Met}$, no contraindication exists, yielding $M, I_H \models \varphi_{Rx}^{+}$.
+    
+    \item \textbf{Constraint extraction.} The hypothesis checker derives semantic constraints $\Phi$ representing conditions under which $\varphi$ holds:
+    \begin{equation}
+    \Phi = \{\mathit{Au}(I, \mathit{prescribe}), \neg\mathit{Ct}(p, m)\}
+    \end{equation}
+    These constraints are passed to the Proof Generation Layer without revealing underlying medical data.
+    
+    \item \textbf{ZKP generation.} The SNARK prover:
+    \begin{enumerate}
+        \item Encodes $\Phi$ into an arithmetic circuit $C$
+        \item Constructs witness $w$ from semantic evaluation results
+        \item Generates proof $\pi$ such that $C(w) = 1$
+    \end{enumerate}
+    The proof attests that a valid semantic evaluation occurred without revealing patient data. Details are provided in Section~\ref{s:rq3}.
+    
+    \item \textbf{Governance verification and acceptance.} The Governance Layer:
+    \begin{enumerate}
+        \item Receives proof $\pi$ and public inputs $\mathit{pub}=\langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle$        
+        \item Verifies $\mathit{Verify}(\pi, \mathit{pub}) \stackrel{?}{=} 1$
+        \item Collectively accepts or rejects via DAO mechanism
+    \end{enumerate}
+    Acceptance allows workflow continuation; rejection triggers escalation.
+    
+    \item \textbf{Workflow continuation.} The accepted semantic outcome is returned to the interorganizational process. For valid prescriptions, subsequent actions include issuance by the hospital and fulfillment by the pharmacy. The semantic interpreter does not participate in execution steps. 
+\end{enumerate}
+
+Failure handling, recovery strategies, and exceptional cases are domain-specific and outside the scope of this architectural workflow.
+
+\subsection{Mechanisms Enabling Semantic Consensus}
+The proposed architecture enables semantic consensus through a combination of complementary mechanisms addressing the key challenges identified in RQ2. Heterogeneity of data models is addressed by operating over a shared semantic model maintained in the DKG, which provides a common interpretative context without requiring centralized data harmonization. Privacy is preserved by decoupling semantic validation from data disclosure, as ZKPs allow verification of semantic correctness without revealing medical data or interpretation logic.
+
+The absence of a trusted intermediary is addressed by separating semantic interpretation, proof generation, and acceptance into distinct layers with non-overlapping responsibilities. Governance decisions are based exclusively on verifiable proof artifacts rather than on trust in interpreters or data providers. Together, these mechanisms enable consensus over semantic statements in decentralized e-health environments without centralized authority or data exposure.
+
+\paragraph{Threat model (preview).}
+We consider adversaries that may control (i) a data provider, (ii) a semantic interpreter, (iii) a proving service, or (iv) a subset of governance voters. The layered design restricts each adversary to the information visible at its layer (Table~\ref{tab:disclosure-matrix}), while correctness relies on ZK soundness and on-chain verification. A detailed threat model and attack analysis are provided in Section~\ref{s:rq3}.
+
+
+
+\subsection{Scope and Limitations of the Architectural Model}
+This section focuses on architectural roles, interactions, and governance mechanisms enabling semantic consensus. The proposed model does not assume global ontology alignment and does not resolve all semantic conflicts automatically; unresolved or ambiguous cases may require governance escalation. Detailed cryptographic constructions, circuit encodings, and proof properties are addressed in Section~V, while formal evaluation and performance considerations are discussed separately.
+
+
+
+\begin{figure}[!ht]
+  \centering
+  \includegraphics[width=8cm]{zkp-arch.png}
+  \caption{Architecture of the Privacy-Preserving Semantic Consensus Framework.}
+  \label{f:arch}
+\end{figure}
+
+\begin{table*}[tb]
+\centering
+\caption{Architectural Layers of the Privacy-Preserving Semantic Consensus Framework}
+\label{tab:architecture_layers}
+\small
+\begin{tabular}{p{3.5cm}p{3.5cm}p{9.5cm}}
+\toprule
+\textbf{Layer} & \textbf{Responsibility} & \textbf{Description} \\
+\midrule
+Domain Systems Layer &
+Provision of medical data &
+Represents heterogeneous healthcare systems such as hospitals, laboratories, and patient-controlled records. This layer provides raw medical facts and observations while remaining isolated from consensus and governance processes to preserve data confidentiality. \\
+\addlinespace
+Semantic Interpretation Layer (off-chain) &
+Evaluation of semantic truth &
+Performs semantic interpretation and validation of medical statements based on local data models, ontologies, and policies. This layer determines whether a domain-specific statement is true in a given model, following a Tarskian notion of semantic truth. \\
+\addlinespace
+Proof Generation Layer (off-chain) &
+Cryptographic proof construction &
+Transforms the result of semantic interpretation into ZKPs. This layer enables verifiable validation of semantic correctness without revealing sensitive medical data or internal decision logic. \\
+\addlinespace
+Governance and Verification Layer (on-chain) &
+Collective acceptance and enforcement &
+Implements decentralized governance mechanisms, such as DAO-based consensus, to verify cryptographic proofs and collectively accept or reject semantic statements. This layer ensures agreement without relying on a trusted intermediary. \\
+\bottomrule
+\end{tabular}
+\end{table*}
+
+%===============================SECTION 5=============================================
+
+\section{Technical Design and Integrability of zk-SNARKs for Verifiable Privacy-Preserving Consensus}
+\label{s:rq3}
+This section addresses the third research question (RQ3) by providing the technical design for encoding and verifying semantic truth using ZKPs. We demonstrate how the formal satisfaction relation $M, I \models \varphi$ from Section~\ref{ss:semantic} is transformed into zk-SNARK circuits and how the resulting proofs integrate with the governance architecture presented in Section~\ref{s:rq2}.
+
+\subsection{Threat Model and Trust Assumptions}
+In this section, we propose the threat model and trust assumptions for the proposed design. We define who can attack the system and which components of our system are trustworthy or not. Finally, we define what can be guaranteed by the proposed approach and against which attacks the proposed design can defend.
+
+\subsubsection{Adversary Model}
+We consider four types of adversaries in our context: a malicious semantic interpreter, a dishonest prover, colluding governance participants, and an external observer.
+
+A semantic interpreter (e.g., hospital system) may attempt to produce an incorrect evaluation result. For example, a compromised hospital system might claim $M, I \not\models \mathit{Ct}(p, m)$ (no contraindication) when in fact $M, I \models \mathit{Ct}(p, m)$ holds, thereby enabling an unsafe prescription to proceed. The adversary's goal is to cause the governance layer to accept an invalid prescription.
+
+The dishonest prover is a party producing the ZKP who may try to create convincing $\pi$ even if the witness is falsified. Hypothetically, a cheating prover could try to prove that the patient’s eGFR meets the threshold ($\mathit{eGFR} \geq 30$) when it actually does not. The adversary attempts to construct a proof that verifies even though it encodes an invalid prescription.
+
+In a DAO, validators and voters may collude to provide a false validation result—accepting the incorrect proofs and rejecting the correct ones. For example, if a hospital and pharmacy have the same owner, they can cooperate to accept prescriptions while bypassing the necessary validations. The goal of such adversaries is to break the collective decision-making process.
+
+An external observer who can access the on-chain data can try to extract private health data from publicly available sources. proofs, inputs or verification transcripts. This can lead to the patient's data breach such as allergies, laboratory test results, or other health data.
+
+\subsubsection{Trust Assumptions}
+We assume standard zk-SNARK security (computational soundness and zero-knowledge) for the selected proving system and that verification keys are generated and published according to the protocol (e.g., via a governance-approved setup process or a transparent setup where applicable). We assume the governance layer verifies proofs correctly and records decisions immutably once accepted.
+
+Domain systems and semantic interpreters are not assumed to be trusted for correctness: their outputs must be justified by proofs. Patient-specific evidence remains off-chain; when it is referenced by the circuit, it is bound via commitments (e.g., hashes or Merkle roots) anchored in governance-approved registries. Time is treated as a governance input: the verification time $t_{now}$ and freshness thresholds $\Delta_{\max}$ are policy parameters set and updated through governance procedures.
+
+
+\subsubsection{Security Goals}
+The design targets the following security goals for statement-level (semantic) consensus:
+\begin{itemize}
+    \item \textbf{Correctness of acceptance:} an on-chain acceptance must imply that the corresponding statement satisfies the encoded semantic constraints (soundness of the accepted outcome).
+    \item \textbf{Privacy of patient evidence:} proofs must not reveal PHI beyond the declared public inputs (zero-knowledge).
+    \item \textbf{Binding and non-replay:} a proof must be bound to a specific statement instance and governance context (e.g., policy version, nonce/session, timestamp) to prevent reuse across workflows.
+    \item \textbf{Accountability:} accepted outcomes must be auditable at the level of committed artifacts (statement hash, policy/ontology commitments, timestamps) without exposing underlying evidence.
+\end{itemize}
+
+
+\subsubsection{Problem Statement}
+Our semantic layer decides acceptance of an e-health statement by evaluating the satisfaction relation $M,I,g \models \varphi$ (Def.~5) under a shared semantic model $M$ and an authenticated interpreter context $I$. 
+To make this decision verifiable by the governance layer without revealing patient evidence, we translate the semantic check into a zk-SNARK statement.
+
+For each statement schema (e.g., prescription validity), we define an arithmetic circuit $C$ and public inputs $\mathit{pub}$ such that:
+(i) if the semantic evaluation accepts, then there exists a witness $w$ derived from the private evidence and interpreter context for which $C(w,\mathit{pub})=1$ (completeness), and 
+(ii) if the semantic evaluation rejects, then no computationally bounded prover can produce a proof for $C(w,\mathit{pub})=1$ without violating zk-SNARK soundness.
+
+In our design, $\mathit{pub}$ commits to the evaluated statement via $\mathit{stmt\_hash}=H(\varphi)$ and exposes only the governance-relevant outcome (accept/reject) and timing metadata, while all patient-specific evidence, alignment artifacts, and intermediate reasoning values remain in the witness.
+
+
+\subsubsection{Problem Statement}
+\label{sec:rq3-problem}
+
+Our technical goal is to construct a zk-SNARK proof that attests to the correctness of semantic truth evaluation without revealing patient-specific evidence. For a target statement schema $\varphi$ (e.g., prescription validity), the prover demonstrates that the off-chain semantic interpreter correctly evaluated the acceptance condition under the shared model $M$ and interpreter context $I$, while keeping clinical evidence (allergies, laboratory values, and other sensitive facts) private.
+
+We compile the semantic acceptance condition $M,I \models \varphi$ into an arithmetic circuit $C$ such that $C(w,x)=1$ iff the encoded semantic constraints for $\varphi$ hold under $(M,I)$, where $w$ is the private witness and $x$ is the public input vector consumed by governance.
+
+In this work we follow a minimal-disclosure policy and use
+\begin{IEEEeqnarray}{rCl}
+x &=& \langle \mathit{stmt\_hash},\, \mathit{outcome},\, \mathit{timestamp}\rangle, \nonumber
+\end{IEEEeqnarray}
+where $\mathit{stmt\_hash}=H(\varphi)$ commits to the full statement content (including medication identity) without disclosing it on-chain.
+The resulting proof $\pi$ must be verifiable by governance nodes (including on-chain verification) and binding to the committed statement and its evaluation outcome.
+
+
+
+\subsubsection{Circuit Format Selection}
+To instantiate the proof layer as a practical proof-of-concept, we adopt a Groth16-style zk-SNARK circuit model and implement circuits in Circom\footnote{\url{https://docs.circom.io/}}.
+This choice is motivated by (i) mature tooling for compiling high-level constraints into Rank-1 Constraint Systems (R1CS), (ii) efficient prover performance for medium-size circuits, and (iii) constant-size proofs and low on-chain verification costs, which are well aligned with governance-layer verification.
+
+We note that PLONK\footnote{\url{https://eprint.iacr.org/2019/953}}-family systems provide universal/updatable setup and more flexible proving backends, while Halo2\footnote{\url{https://zcash.github.io/halo2/}} offers a modern PLONK-like design with no trusted setup ceremony and strong ecosystem support. 
+However, in this paper we prioritize a minimal integration path and widely deployed verification patterns, and therefore focus on Groth16 as the baseline protocol.
+
+For on-chain verification, the generated proof is verified via an Ethereum smart contract written in Solidity.\footnote{\url{https://docs.soliditylang.org/en/latest/}}
+This enables the governance layer to validate semantic evaluation outcomes using only $(\pi, \mathit{pub})$ without revealing patient evidence or off-chain reasoning artifacts.
+
+
+
+\subsubsection{Encoding Semantic Predicates as Field Elements}
+\label{sec:rq3-encoding}
+
+To compile semantic evaluation into arithmetic constraints, predicate instances and ontology objects must be represented as elements of a finite field $\mathbb{F}$. We follow a standard encoding approach in which domain identifiers (patients, substances, conditions, prescribers, and context identifiers) are mapped to field elements via fixed-length integer encodings, while semantic relations are checked through commitment-based membership proofs.
+
+\textbf{Identifiers.} Each constant symbol (e.g., $\mathit{pat}_1$, $\mathit{Met}$, $\mathit{Amox}$) is encoded as a field element $\mathrm{id}(\cdot) \in \mathbb{F}$ using a canonical, collision-resistant representation (e.g., hashing to the field). This yields compact representations suitable for Circom circuits.
+
+\textbf{Predicate grounding.} Ground predicate instances such as $\mathit{Al}(p,s)$, $\mathit{Cond}(p,c)$, and $\mathit{Ct}(p,m)$ are represented via membership in committed datasets. Concretely, we assume that the semantic layer maintains commitments (e.g., Merkle roots) to the relevant relations:
+\begin{equation}
+\mathit{root}_{Al},\; \mathit{root}_{Cond},\; \mathit{root}_{Ct},\; \mathit{root}_{Au},
+\end{equation}
+anchored under governance. The witness contains the corresponding membership paths (Merkle proofs) for the tuples being asserted. The circuit verifies these proofs to establish that the required tuples belong to the committed relations, without revealing the full datasets.
+
+\textbf{Ontology constraints.} Ontology-level checks (e.g., subsumption $m \sqsubseteq s$ used in contraindication reasoning) are encoded as membership proofs against a commitment to governance-approved axioms $\mathcal{A}$. For example, a subsumption certificate can be represented as a path or witness object that proves reachability in a committed subsumption graph (or membership in a precomputed closure set) without exposing unrelated ontology structure.
+
+\textbf{Context checks.} Interpreter validity and authorization conditions are encoded similarly: $\mathit{Au}(I,a)$ is checked by membership in a committed authorization relation, while freshness is encoded as an arithmetic inequality over timestamps embedded into the statement commitment and checked inside the circuit.
+
+This encoding strategy yields a uniform compilation pattern: semantic atoms become membership checks against committed relations, and semantic connectives become boolean/arithmetic compositions inside the circuit. As a result, the circuit mirrors the structure of Definition~5 while remaining compatible with Groth16-style arithmetic constraints.
+
+
+\subsection{Prescription Validation Circuit Design}
+\label{sec:rx-circuit}
+
+This subsection specifies the zk-SNARK circuit that proves, in zero knowledge, that a prescription statement satisfies the semantic acceptance conditions defined in Def.~5, without revealing the underlying patient evidence (allergy list, laboratory values, credentials).
+
+
+\subsubsection{Validation Methods Overview}
+\label{sec:validation-overview}
+The circuit proves, in zero knowledge, that a prescription statement
+$\varphi_{Rx}=\mathit{Rx}(d,p,m)$ is \emph{satisfied} under the same semantic conditions as in Def.~5, i.e.,
+\begin{IEEEeqnarray}{rCl}
+M,I \models \mathit{Rx}(d,p,m)
+&\Longleftrightarrow&
+\mathit{Au}(I,\textsf{prescribe})
+\notag\\
+&& \land\; M,I \not\models \mathit{Ct}(p,m).
+\label{eq:rx-core}
+\end{IEEEeqnarray}
+
+In addition, the circuit enforces interpreter validity for any evidence-dependent predicate checks used in the proof, requiring that $\mathit{Valid}(I)$ holds (Definition~4). Operationally, the prover supplies private witness data (credentials, evidence, and auxiliary proofs) and produces a Groth16 proof $\pi$ whose public inputs commit to the evaluated statement (via $\mathit{stmt\_hash}=H(\varphi_{Rx})$) and the resulting accept/reject outcome, without revealing patient evidence.
+
+
+\subsubsection{Sub-circuit Specifications}
+We decompose prescription validation into four reusable sub-circuits that mirror the semantic checks of Def.~5 while remaining implementable over a finite field in a zk-SNARK setting. Each sub-circuit outputs a Boolean flag in $\{0,1\}$, and the top-level circuit accepts iff all required flags hold.
+
+\paragraph{Authorization Check (Membership).}
+The sub-circuit outputs a Boolean flag $\mathit{auth\_ok}\in\{0,1\}$ and enforces that
+the interpreter context is authorized to perform the required action:
+\begin{IEEEeqnarray}{rCl}
+\mathit{auth\_ok}=1
+&\Longleftrightarrow&
+\mathit{Au}(I,\textsf{prescribe}) .
+\label{eq:auth-ok}
+\end{IEEEeqnarray}
+In the circuit, $\mathit{Au}(I,\textsf{prescribe})$ is realized as a membership proof
+(e.g., against a committed registry of authorized roles) bound to $\mathit{stmt\_hash}=H(\varphi)$.
+
+
+\paragraph{Allergy Contraindication Check (Subsumption).}
+The allergy-based contraindication flag $\mathit{allergy\_contra}\in\{0,1\}$ is defined as:
+\begin{IEEEeqnarray}{rCl}
+\mathit{allergy\_contra}=1
+&\Longleftrightarrow&
+\exists s\in D_S:\;
+\mathit{Al}(p,s)
+\label{eq:allergy-contra-1}
+\\
+&& \land\; (m \sqsubseteq s).
+\notag
+\end{IEEEeqnarray}
+When laboratory terminology is used, $\mathit{Sens}(p,s)$ can be accepted as aligned
+hypersensitivity evidence under the governance-approved mapping (cf. Def.~6), i.e.,
+the prover may satisfy $\mathit{Al}(p,s)$ via $\mathit{Sens}(p,s)$.
+
+\paragraph{Data Freshness Check.}
+We output $\mathit{fresh\_ok}\in\{0,1\}$ and enforce Def.~4’s freshness constraint:
+\begin{IEEEeqnarray}{rCl}
+\mathit{fresh\_ok}=1
+&\Longleftrightarrow&
+(t_{\mathit{now}}-ts)\le \Delta_{\max}.
+\label{eq:fresh-ok}
+\end{IEEEeqnarray}
+Here $\Delta_{\max}$ is a governance parameter; $t_{\mathit{now}}$ is the verifier’s time
+reference (e.g., block timestamp), and $ts$ is bound inside the committed statement.
+
+\subsubsection{Circuit Composition}
+The full prescription-validation circuit is obtained by composing the sub-circuits above into a single Boolean decision consistent with the satisfaction condition for prescriptions in Def.~5. Concretely, the circuit computes three intermediate flags: $\mathit{auth\_ok}$ (Def.~\ref{eq:auth-ok}), $\mathit{allergy\_contra}$ (Eq.~\ref{eq:allergy-contra-1}), and, when applicable, $\mathit{renal\_ok}$ (Eq.~\ref{eq:renal-ok}), together with the freshness flag $\mathit{fresh\_ok}$ (Eq.~\ref{eq:fresh-ok}). These flags are then aggregated into a final outcome bit $\mathit{outcome}\in\{0,1\}$ representing acceptance ($1$) or rejection ($0$) of the prescription statement.
+
+We express composition as a sequence of small constraints:
+\begin{IEEEeqnarray}{rCl}
+\mathit{valid\_ctx} &=& \mathit{fresh\_ok} \land \mathit{auth\_ok}
+\label{eq:valid-ctx}\\[1pt]
+\mathit{no\_contra} &=& \neg \mathit{allergy\_contra}
+\label{eq:no-contra}\\[1pt]
+\mathit{clinical\_ok} &=& \mathit{no\_contra} \land \mathit{renal\_ok}
+\label{eq:clinical-ok}\\[1pt]
+\mathit{outcome} &=& \mathit{valid\_ctx} \land \mathit{clinical\_ok}.
+\label{eq:outcome}
+\end{IEEEeqnarray}
+Here $\mathit{renal\_ok}$ is set to $1$ for medications without a laboratory threshold policy; otherwise it is enforced by the laboratory range sub-circuit. In the arithmetic circuit, each Boolean connective is implemented over field elements (e.g., $b\in\{0,1\}$ with $b(b-1)=0$, conjunction via multiplication, and negation via $1-b$), ensuring that the resulting proof attests that the committed statement hash $\mathit{stmt\_hash}=H(\varphi)$ was evaluated consistently with the semantic rules while keeping all sensitive witness data private.
+
+
+\subsection{Witness Structure and Privacy Classification}
+This subsection specifies which inputs are treated as private witness values versus public inputs for verification. The goal is to (i) ensure the circuit proves the semantic acceptance of a statement $\varphi$ (Def.~5) and (ii) minimize on-chain disclosure to reduce linkability and PHI leakage.
+
+\subsubsection{Private Witness Components}
+The private witness $w$ contains all patient-specific evidence and intermediate artifacts required to satisfy the circuit constraints, but which must not be revealed to the verifier. We structure:
+\begin{equation}
+w = \langle w_{\textsf{id}}, w_{\textsf{ctx}}, w_{\textsf{clin}}, w_{\textsf{ont}}, w_{\textsf{aux}} \rangle .
+\label{eq:witness-struct}
+\end{equation}
+Each component is defined as follows:
+\begin{itemize}
+    \item $w_{\textsf{id}}$ (\textbf{private identifiers}): encoded patient and prescriber identifiers used internally by the prover (e.g., $p$, $d$), including salts/randomness used for commitments to prevent linkage across prescriptions.
+    \item $w_{\textsf{ctx}}$ (\textbf{context validity evidence}): inputs used to prove $\mathit{Valid}(I)$, such as the timestamp value $ts$, freshness auxiliary values (e.g., $\Delta = t_{\textsf{now}}-ts$), and membership witnesses for source/credential checks when these are committed on-chain.
+    \item $w_{\textsf{clin}}$ (\textbf{clinical evidence}): patient allergy/sensitivity encodings (e.g., elements witnessing $\langle p,s\rangle\in \mathit{Al}^M$ or $\langle p,s\rangle\in \mathit{Sens}^M$) and laboratory values (e.g., eGFR as an integer or fixed-point encoding) needed for contraindication and threshold checks.
+    \item $w_{\textsf{ont}}$ (\textbf{ontology/axiom witnesses}): witnesses showing that required semantic relations hold under the committed ontology artifacts, e.g., a subsumption-path witness for $m \sqsubseteq s$ and membership proofs against a public commitment to $\mathcal{A}$ (e.g., Merkle authentication paths).
+    \item $w_{\textsf{aux}}$ (\textbf{auxiliary intermediates}): intermediate Boolean flags (e.g., $\mathit{auth\_ok}$, $\mathit{fresh\_ok}$, $\mathit{allergy\_contra}$, $\mathit{renal\_ok}$) and range-check decomposition values required by the arithmetic constraints.
+\end{itemize}
+All elements of $w$ are kept off-chain and are not revealed by the proof, except for what is implied by the public inputs and the final acceptance bit.
+
+\subsubsection{Public Inputs Specification}
+Public inputs are chosen to support on-chain auditability and replay protection while avoiding disclosure of medication identity or patient data. We expose:
+\begin{equation}
+\mathit{pub} = \langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{ts\_anchor}, \mathit{nonce} \rangle .
+\label{eq:public-inputs}
+\end{equation}
+\begin{itemize}
+    \item $\mathit{stmt\_hash}=H(\varphi)$ commits to the full statement content (including medication identity and clinical constraints) without revealing it on-chain.
+    \item $\mathit{outcome}\in\{0,1\}$ is the accept/reject result produced by the circuit (Eq.~\ref{eq:outcome}).
+    \item $\mathit{ts\_anchor}$ is a coarse-grained time anchor (or block time/epoch) used for auditability and for bounding freshness without revealing the exact clinical timestamp if that is considered sensitive.
+    \item $\mathit{nonce}$ is a per-statement unique value (or session identifier) bound into $H(\varphi)$ to prevent replay and reduce linkability across prescriptions.
+\end{itemize}
+If the deployment requires public medication identity (e.g., for pharmacy fulfillment), this can be handled as an optional design variant by publishing an additional commitment or a selectively disclosable label; in the default design here, medication identity remains inside $\mathit{stmt\_hash}$.
+
+\subsubsection{Privacy Guarantees by Participant}
+Given the layered architecture in Section~\ref{s:rq2}, privacy guarantees can be stated per participant role:
+\begin{itemize}
+    \item \textbf{External observers (public chain readers).} Observe only $(\pi,\mathit{pub})$ and cannot learn patient identity, allergies, lab values, or the medication from $\mathit{stmt\_hash}$ under standard hash and zk-SNARK assumptions.
+    \item \textbf{Governance validators/verifiers.} Verify $\pi$ against $\mathit{pub}$ and learn only the binary decision $\mathit{outcome}$ plus audit metadata (timestamp anchor, nonce). They do not access witness values or raw medical evidence.
+    \item \textbf{Semantic interpreter / prover.} Sees the required off-chain clinical evidence for the evaluated statement and constructs the witness. Privacy is preserved against other participants because this evidence does not leave the off-chain boundary and is not derivable from the proof.
+    \item \textbf{Domain data providers (hospital/lab/pharmacy systems).} Only contribute the subset of evidence they are authorized to share; no additional data is revealed to them through verification, since they can validate outcomes using public proofs rather than receiving raw cross-organization records.
+\end{itemize}
+Overall, the construction achieves data minimization: the ledger anchors a commitment to the statement and a verifiable decision, while sensitive evidence remains off-chain as witness material.
+
+
+
+
+\subsection{Running Case Instantiation}
+This subsection instantiates the circuit design on the running case from Section~\ref{ss:rc} and Section~\ref{sec:formal-running-case}. We illustrate how a Metformin prescription is encoded, which values are treated as public inputs versus private witness components, and how a zk-SNARK proof $\pi$ is produced to attest that the prescription statement is accepted under the satisfaction relation (Def.~5) without disclosing patient evidence.
+
+\subsubsection{Metformin Prescription: Input Values}
+We consider the valid-prescription scenario in which a physician prescribes Metformin:
+\begin{equation}
+\varphi_{Rx}^{+} = \mathit{Rx}(\mathit{doc}_1, \mathit{pat}_1, \mathit{Met}).
+\end{equation}
+The prover evaluates $\varphi_{Rx}^{+}$ under the shared semantic model $M$ and hospital interpreter context $I_H$ (Def.~4), obtaining the acceptance outcome
+\begin{equation}
+\mathit{outcome} = 1.
+\label{eq:rc-outcome-met}
+\end{equation}
+
+\textbf{Public inputs.} The on-chain verifier receives the public inputs (cf. Eq.~\ref{eq:public-inputs}):
+\begin{equation}
+\mathit{pub}=\langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{ts\_anchor}, \mathit{nonce}\rangle,
+\end{equation}
+where $\mathit{stmt\_hash}=H(\varphi_{Rx}^{+})$ commits to the prescription statement (including medication identity) without revealing it.
+
+\textbf{Private clinical evidence (witness-only).} The prover holds off-chain evidence sufficient to satisfy the circuit constraints, including:
+\begin{itemize}
+    \item \textit{Authorization evidence:} values that establish $\mathit{Au}(I_H,\textsf{prescribe})$ and $\mathit{Valid}(I_H)$.
+    \item \textit{Allergy/sensitivity evidence:} encoded allergy facts and/or aligned sensitivity facts (e.g., $\mathit{Al}(\mathit{pat}_1,\mathit{Pen})$ and/or $\mathit{Sens}(\mathit{pat}_1,\beta\text{-}\mathit{lac})$).
+    \item \textit{Ontology evidence:} witnesses against the public commitment to $\mathcal{A}$ to support required semantic checks (e.g., subsumption-path witnesses where needed).
+    \item \textit{Laboratory evidence (if required by policy):} an encoded eGFR value and range-check auxiliaries to show $\mathit{eGFR}\ge 30$.
+\end{itemize}
+In the Metformin case, the allergy-based contraindication check evaluates to false (no contraindication), and the renal threshold check evaluates to true under the adopted guideline policy.
+
+\subsubsection{Witness Construction}
+The witness instantiation follows the structure in Eq.~\ref{eq:witness-struct}. Concretely, the prover assembles:
+\begin{equation}
+w = \langle w_{\textsf{id}}, w_{\textsf{ctx}}, w_{\textsf{clin}}, w_{\textsf{ont}}, w_{\textsf{aux}} \rangle.
+\end{equation}
+
+\textbf{(i) Identifiers and commitments.} The prover selects a fresh nonce $\mathit{nonce}$ and (optionally) a salt $r$ and computes:
+\begin{equation}
+\mathit{stmt\_hash}=H(\varphi_{Rx}^{+}\,\|\,\mathit{nonce}\,\|\,r),
+\end{equation}
+binding the proof to a unique statement instance and reducing linkability across prescriptions.
+
+\textbf{(ii) Context validity inputs.} The prover includes the interpreter context values needed to satisfy $\mathit{Valid}(I_H)$ (Def.~4), e.g., the clinical timestamp $ts$, and auxiliary values to show freshness against $\Delta_{\max}$.
+
+\textbf{(iii) Clinical evidence.} The prover encodes the required medical facts as field elements (Section~\ref{s:rq3}): allergy/sensitivity encodings, and (if applicable) an integer or fixed-point encoding of eGFR with range-check decomposition values.
+
+\textbf{(iv) Ontology/axiom witnesses.} If the circuit checks membership of axioms or subsumption relationships against an on-chain commitment to $\mathcal{A}$, the prover includes Merkle authentication paths or equivalent membership witnesses.
+
+\textbf{(v) Auxiliary Boolean flags.} The prover includes intermediate flags consistent with the semantic checks, for example:
+\begin{equation}
+\mathit{auth\_ok}=1,\quad \mathit{fresh\_ok}=1,\quad \mathit{contra\_ok}=1,\quad \mathit{renal\_ok}=1,
+\end{equation}
+where $\mathit{contra\_ok}=1$ denotes that contraindication is not satisfied for Metformin in this case (i.e., $\neg \mathit{Ct}(\mathit{pat}_1,\mathit{Met})$).
+
+\subsubsection{Proof Generation Walkthrough}
+The proof generation follows the standard zk-SNARK pipeline, specialized to semantic acceptance:
+
+\begin{enumerate}
+    \item \textbf{Semantic evaluation (off-chain).} The hypothesis checker evaluates Def.~5 for $\varphi_{Rx}^{+}$ and derives the constraint set $\Phi$ (e.g., authorization, freshness, and contraindication negation). This yields $\mathit{outcome}=1$.
+    
+    \item \textbf{Circuit instantiation.} The prover instantiates the fixed circuit template for prescription validation (Section~\ref{s:rq3}) with public inputs $\mathit{pub}$ and witness $w$. The circuit enforces that (i) the committed statement hash matches the internal encoding of $\varphi_{Rx}^{+}$ and (ii) all required checks are satisfied.
+    
+    \item \textbf{Witness assignment.} The prover assigns witness values to satisfy each sub-circuit:
+    \begin{itemize}
+        \item Authorization sub-circuit enforces $\mathit{auth\_ok}=1$.
+        \item Data freshness sub-circuit enforces $\mathit{fresh\_ok}=1$.
+        \item Allergy contraindication sub-circuit enforces $\mathit{contra\_ok}=1$.
+        \item Laboratory range sub-circuit (if enabled) enforces $\mathit{renal\_ok}=1$.
+    \end{itemize}
+    The circuit then derives $\mathit{outcome}$ as a deterministic function of these flags.
+    
+    \item \textbf{Proving.} Using the proving key $pk$, the prover runs the SNARK prover algorithm to produce a proof $\pi$ such that:
+    \begin{equation}
+    \mathit{Verify}_{vk}(\pi,\mathit{pub}) = 1.
+    \end{equation}
+    
+    \item \textbf{On-chain verification and governance.} The prover submits $(\pi,\mathit{pub})$ to the governance layer. Verifiers check the proof using $vk$ and record the accepted outcome without learning the underlying allergy record, eGFR value, or medication identity (which remains committed inside $\mathit{stmt\_hash}$).
+\end{enumerate}
+
+This instantiation demonstrates how a clinically meaningful acceptance decision (Metformin allowed) is converted into a verifiable on-chain artifact while preserving confidentiality of patient evidence and reducing linkability across prescriptions.
+
+
+\subsection{Proof Lifecycle and Governance Integration}
+\label{sec:proof-lifecycle}
+
+This subsection specifies how zk-SNARK proofs are generated, bound to governance state, and managed over time within the interorganizational workflow.
+
+\subsubsection{Proof Generation Timing}
+\label{sec:proof-timing}
+
+Proof generation occurs \emph{after} semantic evaluation has been completed off-chain and the statement $\varphi$ has been fully instantiated (e.g., $\varphi_{Rx} = \mathit{Rx}(d,p,m)$ with concrete identifiers and policy version). 
+
+Concretely, the lifecycle is:
+\begin{enumerate}
+    \item The semantic interpreter evaluates $M,I \models \varphi$ using validated and fresh evidence.
+    \item If the acceptance condition holds, the interpreter derives constraint set $\Phi$ corresponding to the circuit encoding.
+    \item A witness $w$ is constructed from private evidence (allergy facts, laboratory values, authorization proofs, timestamps).
+    \item The prover computes a proof $\pi$ such that $C(w, x)=1$, where $x=\langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle$.
+\end{enumerate}
+
+Proof generation is therefore triggered only for governance-relevant statements and reflects a single semantic decision instance.
+
+\subsubsection{Binding to Governance State}
+\label{sec:binding-governance}
+
+To prevent substitution or misuse of proofs, each proof is cryptographically bound to a specific governance context.
+
+The public input includes a commitment
+\[
+\mathit{stmt\_hash} = H(\varphi \,\|\, \mathit{policy\_version} \,\|\, \mathit{nonce}),
+\]
+where $\mathit{policy\_version}$ denotes the governance-approved ontology/policy snapshot and $\mathit{nonce}$ uniquely identifies the workflow instance.
+
+This binding ensures:
+\begin{itemize}
+    \item A proof generated under one policy version cannot be reused after a governance update.
+    \item A proof for one prescription cannot be substituted for another statement.
+    \item Governance acceptance corresponds to a uniquely committed semantic decision.
+\end{itemize}
+
+The verification key $vk$ used by the on-chain verifier is also bound to a specific circuit version, preventing cross-circuit substitution attacks.
+
+\subsubsection{Replay Protection}
+\label{sec:replay-protection}
+
+Replay protection prevents reuse of stale proofs or evidence across different workflow instances.
+
+We enforce replay protection at two levels:
+\begin{itemize}
+    \item \textbf{Statement-level binding:} The inclusion of a unique $\mathit{nonce}$ or session identifier in $\mathit{stmt\_hash}$ ensures that each proof corresponds to exactly one workflow instance.
+    \item \textbf{Freshness enforcement:} The circuit enforces $(t_{\textsf{now}} - ts) \le \Delta_{\max}$ (Def.~4), preventing acceptance based on outdated clinical evidence.
+\end{itemize}
+
+As a result, a previously valid proof cannot be replayed for a different prescription, patient session, or policy state.
+
+\subsubsection{Revocation and Expiration}
+\label{sec:revocation-expiration}
+
+Revocation and expiration mechanisms address changes in governance policy, interpreter credentials, or clinical evidence validity.
+
+\textbf{Policy updates.} When governance updates ontology axioms or authorization policies, the $\mathit{policy\_version}$ included in $\mathit{stmt\_hash}$ changes. Proofs generated under earlier versions remain auditable but are not valid for new decisions.
+
+\textbf{Credential revocation.} If interpreter credentials are revoked, future proofs will fail the $\mathit{Au}(I,a)$ membership check because the corresponding commitment root is updated on-chain.
+
+\textbf{Evidence expiration.} Laboratory measurements and other time-sensitive evidence expire according to $\Delta_{\max}$. Even if a proof was valid at generation time, governance may reject it if verification occurs outside the permitted freshness window.
+
+Together, these mechanisms ensure that proofs are not only correct at the time of generation, but also aligned with the current governance state and policy context.
+
+\subsection{Security and Privacy Analysis}
+\label{sec:security-privacy-analysis}
+
+This subsection analyzes the security and privacy properties of the proposed zk-SNARK-based semantic consensus framework under the adversary model defined in Section~\ref{sec:rq3-problem}. The analysis focuses on guarantees provided by the proof system, commitment binding, and governance-layer verification, as well as the limitations inherent to the architectural model.
+
+\subsubsection{Security Guarantees}
+\label{sec:security-guarantees}
+
+\paragraph{Correctness of semantic acceptance.}
+If the governance layer verifies a proof $\pi$ with public inputs
+\[
+x = \langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle
+\]
+and records the outcome as accepted, then the arithmetic circuit constraints were satisfied.
+By construction of the prescription-validation circuit (Section~\ref{sec:rx-circuit}), this implies that the semantic condition
+\[
+M,I \models \varphi
+\]
+held for the committed statement instance.
+Consequently, a semantically invalid prescription cannot be accepted without breaking the soundness of the zk-SNARK protocol.
+
+\paragraph{Statement binding and non-substitution.}
+Each proof is cryptographically bound to a unique statement commitment
+\[
+\mathit{stmt\_hash}=H(\varphi \,\|\, \mathit{policy\_version} \,\|\, \mathit{nonce}),
+\]
+which incorporates the concrete prescription statement, governance policy version, and a workflow-specific nonce.
+This prevents substitution attacks in which a proof for one prescription instance is reused to justify a different statement or policy context.
+
+\paragraph{Replay resistance and freshness enforcement.}
+Replay attacks are mitigated at two levels.
+First, a unique nonce is included in the statement commitment, ensuring that each workflow instance has a distinct proof context.
+Second, freshness constraints (e.g., $(t_{\textsf{now}} - ts) \le \Delta_{\max}$) are enforced inside the circuit, preventing acceptance based on outdated clinical evidence.
+Together, these mechanisms ensure that previously valid proofs cannot be reused across sessions or outside permitted temporal windows.
+
+\paragraph{Governance-layer robustness.}
+Even if a subset of governance participants colludes, they cannot fabricate a valid proof for a semantically false statement without violating zk-SNARK soundness.
+While colluding voters may attempt to reject valid proofs or modify acceptance thresholds through governance procedures, they cannot cause cryptographically invalid statements to verify successfully.
+
+\subsubsection{Privacy Guarantees}
+\label{sec:privacy-guarantees}
+
+\paragraph{Witness confidentiality.}
+All patient-specific clinical evidence (e.g., allergy records, laboratory values, medication identifiers) is included only in the private witness $w$ and is never disclosed as part of the public inputs.
+Under the zero-knowledge property of Groth16, the proof $\pi$ reveals no information about the witness beyond what is implied by the public inputs.
+
+\paragraph{Minimal on-chain disclosure.}
+The governance layer observes only $(\pi, x)$, where
+\[
+x = \langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle.
+\]
+Sensitive attributes such as medication identity and detailed laboratory results are embedded only within the committed statement hash and are not explicitly revealed on-chain.
+This reduces linkability across prescriptions and limits the attack surface for inference from public blockchain data.
+
+\paragraph{Abstraction of ontology and policy artifacts.}
+Subsumption checks, alignment artifacts, and authorization policies are verified against commitments (e.g., Merkle roots) to governance-approved datasets.
+The full ontology, patient datasets, and policy internals are not exposed during proof verification.
+This preserves institutional data autonomy while enabling interoperable reasoning.
+
+\subsubsection{Limitations and Non-Guarantees}
+\label{sec:limitations}
+
+\paragraph{Trusted setup assumption.}
+Groth16 requires a trusted setup per circuit.
+If the setup process is compromised, soundness guarantees may be weakened.
+Mitigation strategies include multi-party ceremonies or migration to universal-setup zk-SNARK systems in future work.
+
+\paragraph{Correctness limited to encoded semantics.}
+The proof system guarantees correctness with respect to the encoded circuit constraints.
+If the circuit inaccurately implements the intended semantic rules, the system may faithfully prove compliance with an unintended policy.
+Formal verification of circuit correctness is outside the scope of this work.
+
+\paragraph{Governance policy risks.}
+The architecture ensures cryptographic integrity of semantic verification but does not prevent governance participants from modifying policies, voting thresholds, or participant weights through legitimate governance mechanisms.
+Such risks are organizational and procedural rather than cryptographic.
+
+\paragraph{Metadata leakage.}
+Although PHI is not revealed, limited inference may be possible from public metadata such as timestamps or repeated commitments.
+Mitigation strategies (e.g., batching, delayed publication, or anonymized scheduling) are not addressed in this work.
+
+\paragraph{Clinical policy scope.}
+The framework guarantees compliance with encoded clinical rules but does not guarantee that the rules themselves are clinically optimal or up to date.
+Clinical validity remains a responsibility of governance authorities and domain experts.
+
+
+\subsection{Complexity and Feasibility Analysis}
+\label{sec:complexity-analysis}
+
+This subsection evaluates the computational and deployment feasibility of the proposed zk-SNARK-based semantic consensus mechanism. The analysis considers circuit size, proof characteristics, verification cost, and the expected impact on clinical workflows.
+
+\subsubsection{Circuit Complexity}
+\label{sec:circuit-complexity}
+
+The overall circuit complexity is determined by the number of constraints required to encode the semantic acceptance condition for a prescription statement (Section~\ref{sec:rx-circuit}). The circuit consists of four principal components:
+
+\begin{itemize}
+    \item Authorization membership verification (e.g., Merkle inclusion proof);
+    \item Allergy-based contraindication checks (including subsumption witness verification);
+    \item Laboratory range constraints (e.g., eGFR threshold comparison);
+    \item Freshness and interpreter validity checks.
+\end{itemize}
+
+Let $n_{\textsf{Merkle}}$ denote the constraint count for a Merkle inclusion proof of depth $d$, and $n_{\textsf{range}}$ denote the constraint count for a bounded range comparison (e.g., bit-decomposition of a 16- or 32-bit integer). The total constraint count can be approximated as:
+
+\begin{equation}
+n_{\textsf{total}} \approx n_{\textsf{Merkle}} + n_{\textsf{subsumption}} + n_{\textsf{range}} + n_{\textsf{freshness}}.
+\end{equation}
+
+In practice, for medium-depth Merkle trees and standard range checks, the circuit remains within a range compatible with practical Groth16 proving times on commodity hardware. The design avoids unbounded recursion or large dynamic datasets, ensuring that constraint growth remains linear in the number of checked predicates.
+
+\subsubsection{Proof Size and Verification Cost}
+\label{sec:proof-size}
+
+Using Groth16, the proof size is constant with respect to circuit complexity and independent of the size of the witness. This makes it particularly suitable for on-chain verification in governance-oriented environments.
+
+On-chain verification requires a fixed number of elliptic-curve pairing operations, resulting in constant-time verification cost per proof. While the prover cost grows with circuit size, verification cost remains stable and predictable, aligning with the requirement that governance nodes process proofs efficiently without handling clinical data.
+
+The public input vector is minimal,
+\[
+\langle \mathit{stmt\_hash}, \mathit{outcome}, \mathit{timestamp} \rangle,
+\]
+which limits calldata size and reduces gas consumption in smart-contract verification scenarios.
+
+\subsubsection{Latency Impact on Clinical Workflows}
+\label{sec:latency}
+
+Proof generation is performed off-chain and is therefore isolated from governance-layer latency constraints. The primary latency factors are:
+
+\begin{itemize}
+    \item Semantic evaluation time (ontology checks and evidence retrieval);
+    \item zk-SNARK proving time;
+    \item On-chain verification time.
+\end{itemize}
+
+For typical prescription validation circuits of moderate size, proving time is expected to remain within clinically acceptable limits (e.g., seconds on standard hardware). On-chain verification introduces only minimal additional delay relative to transaction confirmation time.
+
+Importantly, the workflow remains asynchronous: prescription preparation, proof generation, and governance verification are decoupled from patient data storage and retrieval. Therefore, the zk-SNARK layer does not introduce blocking dependencies on centralized intermediaries.
+
+\subsubsection{Comparison with Existing Approaches}
+\label{sec:comparison}
+
+Compared to traditional centralized verification, the proposed approach eliminates reliance on a trusted intermediary while preserving verifiability and auditability.
+
+Compared to Multi-Party Computation (MPC), the zk-SNARK approach avoids synchronous interaction among all participants and produces a succinct proof artifact that can be independently verified.
+
+Compared to Homomorphic Encryption (HE), the proposed method provides verifiable correctness guarantees without incurring heavy ciphertext computation overhead for general-purpose arithmetic.
+
+Finally, unlike purely blockchain-based consensus mechanisms (e.g., PoW, PBFT), the design establishes consensus over \emph{semantic truth} rather than over transaction ordering, enabling governance-level validation of domain-specific medical statements while preserving patient privacy.
+
+
+\section{Evaluation}
+\label{s:eval}
+
+\subsection{CPN Model of the E-Health Workflow}
+\label{s:eval:cpn}
+
+\subsection{State Space Analysis Results}
+\label{s:eval:statespace}
+
+\subsection{ZKP Circuit Implementation Results}
+\label{s:eval:zkp}
+
+To validate the technical design presented in Section~\ref{s:techdesign}, we implement the \texttt{PrescriptionValidation} circuit using Circom~2.0 and the Groth16 proving system over the BN128 elliptic curve. The implementation covers the full pipeline: circuit compilation, trusted setup ceremony, witness generation, proof generation, and on-chain verifier export.
+
+\subsubsection{Circuit Implementation}
+
+The circuit encodes the satisfaction relation $M, I \models \mathit{Rx}(d, p, m)$ from Definition~5 as five arithmetic sub-circuits over a finite field:
+\begin{enumerate}
+    \item \textbf{Auth(cred):} Poseidon hash verification of doctor credentials, $\mathrm{Poseidon}(\mathit{doctorId},\, \mathit{doctorSecret}) = \mathit{doctorCredentialHash}$.
+    \item \textbf{$src \in \mathcal{S}_{trusted}$:} Poseidon hash of the data source identifier, $\mathrm{Poseidon}(\mathit{sourceId}) = \mathit{trustedSourceHash}$.
+    \item \textbf{Data freshness:} Arithmetic range check, $\mathit{dataAge} < \Delta_{\max}$, implemented via a 32-bit \texttt{LessThan} comparator.
+    \item \textbf{Au($I$, prescribe):} Action equality constraint, $\mathit{authorizedAction} - \mathit{requiredAction} = 0$.
+    \item \textbf{$\neg$Ct($p$,$m$):} Contraindication absence check via the is-zero gadget applied to $\mathit{allergyClassId} - \mathit{medicationClassId}$.
+\end{enumerate}
+
+The final outcome is computed as:
+\begin{IEEEeqnarray}{rCl}
+\mathit{computedOutcome} &=& \mathit{freshOk} \times \mathit{noContraindication},
+\end{IEEEeqnarray}
+and constrained to equal the declared public output $\mathit{outcome} \in \{0,1\}$, preventing the prover from misreporting the result.
+
+The compiled R1CS constraint system has the following characteristics, summarized in Table~\ref{tab:circuit-stats}:
+
+\begin{table}[t]
+\centering
+\caption{PrescriptionValidation Circuit Statistics (Groth16 / BN128).}
+\label{tab:circuit-stats}
+\begin{tabular}{p{0.55\linewidth} p{0.35\linewidth}}
+\hline
+\textbf{Parameter} & \textbf{Value} \\
+\hline
+Proving system      & Groth16 \\
+Curve               & BN128 \\
+Non-linear constraints & 495 \\
+Linear constraints  & 479 \\
+Total constraints   & 974 \\
+Wires               & 982 \\
+Public inputs       & 5 \\
+Private inputs      & 7 \\
+Proof size          & 192 bytes \\
+\hline
+\end{tabular}
+\end{table}
+
+The five public inputs visible to the on-chain verifier are: \texttt{doctorCredentialHash}, \texttt{trustedSourceHash}, \texttt{requiredAction}, \texttt{deltaMax}, and \texttt{outcome}. The seven private inputs—\texttt{doctorId}, \texttt{doctorSecret}, \texttt{authorizedAction}, \texttt{sourceId}, \texttt{dataAge}, \texttt{allergyClassId}, and \texttt{medicationClassId}—remain exclusively in the off-chain witness and are never transmitted to the verifier.
+
+\subsubsection{Trusted Setup Ceremony}
+
+The cryptographic parameters were generated via a two-phase trusted setup ceremony using snarkjs v0.7.6.
+
+\textbf{Phase~1 (Powers of Tau).} A universal structured reference string supporting up to $2^{12} = 4096$ constraints was generated on the BN128 curve. Two independent contributors participated sequentially, each contributing fresh randomness. The resulting accumulator was verified: $\mathit{Valid} = \mathrm{true}$.
+
+\textbf{Phase~2 (Circuit-specific setup).} The universal SRS was bound to \texttt{prescription.r1cs} via the Groth16 setup procedure. Two independent contributors participated. The final proving key was verified against the R1CS and the Phase~1 output: $\mathit{Valid} = \mathrm{true}$.
+
+Security of the ceremony relies on the standard assumption that at least one contributor per phase destroys their randomness (toxic waste). With two independent contributors, a single honest participant is sufficient to guarantee soundness of the resulting parameters~\cite{groth16}.
+
+\subsubsection{Proof Generation and Verification}
+
+We instantiate the running case from Section~\ref{s:running-case} with the following concrete witness values: $\mathit{doctorId} = 123$, $\mathit{doctorSecret} = 456$, $\mathit{sourceId} = 1$ (hospital), $\mathit{dataAge} = 30$ days ($\Delta_{\max} = 90$), $\mathit{allergyClassId} = 2$ ($\beta$-lactam), $\mathit{medicationClassId} = 5$ (antidiabetic). This corresponds to the valid Metformin prescription scenario $\varphi^{+}_{Rx}$ from Section~\ref{s:running-case}, where no contraindication exists.
+
+The public credential and source commitments are computed as:
+\begin{IEEEeqnarray}{rCl}
+\mathit{doctorCredentialHash} &=& \mathrm{Poseidon}(123,\, 456), \\
+\mathit{trustedSourceHash} &=& \mathrm{Poseidon}(1).
+\end{IEEEeqnarray}
+
+A Groth16 proof $\pi = (\pi_a, \pi_b, \pi_c)$ was generated using the compiled WASM witness generator and the Phase~2 proving key. On-chain verification using the exported \texttt{PrescriptionVerifier.sol} Solidity contract returned:
+\begin{IEEEeqnarray}{rCl}
+\mathrm{Verify}_{vk}(\pi,\, \mathit{pub}) &=& \mathrm{true}.
+\end{IEEEeqnarray}
+
+The proof size is 192 bytes (three elliptic curve points), and on-chain verification requires a constant number of pairing operations independent of circuit complexity, consistent with the Groth16 efficiency guarantees discussed in Section~\ref{s:techdesign}.
+
+The full ceremony transcript, verification key, generated proof, public signals, and Solidity verifier are publicly available at \url{https://github.com/medalex/zkp}.
+
+\subsection{Summary}
+\label{s:eval:summary}
+
+\section{Discussions}
+\label{s:discussions}
+
+\section{Conclusion}
+\label{s:conclusion}
+
+
+\section*{Acknowledgment}
+
+
+The authors would like to thank...
+
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+
+% trigger a \newpage just before the given reference
+% number - used to balance the columns on the last page
+% adjust value as needed - may need to be readjusted if
+% the document is modified later
+%\IEEEtriggeratref{8}
+% The "triggered" command can be changed if desired:
+%\IEEEtriggercmd{\enlargethispage{-5in}}
+
+% references section
+
+% can use a bibliography generated by BibTeX as a .bbl file
+% BibTeX documentation can be easily obtained at:
+% http://mirror.ctan.org/biblio/bibtex/contrib/doc/
+% The IEEEtran BibTeX style support page is at:
+% http://www.michaelshell.org/tex/ieeetran/bibtex/
+%\bibliographystyle{IEEEtran}
+% argument is your BibTeX string definitions and bibliography database(s)
+%\bibliography{IEEEabrv,../bib/paper}
+%
+% <OR> manually copy in the resultant .bbl file
+% set second argument of \begin to the number of references
+% (used to reserve space for the reference number labels box)
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+% biography section
+% 
+% If you have an EPS/PDF photo (graphicx package needed) extra braces are
+% needed around the contents of the optional argument to biography to prevent
+% the LaTeX parser from getting confused when it sees the complicated
+% \includegraphics command within an optional argument. (You could create
+% your own custom macro containing the \includegraphics command to make things
+% simpler here.)
+%\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{mshell}}]{Michael Shell}
+% or if you just want to reserve a space for a photo:
+
+%\begin{IEEEbiography}{Michael Shell}
+%Biography text here.
+%\end{IEEEbiography}
+
+% if you will not have a photo at all:
+%\begin{IEEEbiographynophoto}{John Doe}
+%Biography text here.
+%\end{IEEEbiographynophoto}
+
+% insert where needed to balance the two columns on the last page with
+% biographies
+%\newpage
+
+%\begin{IEEEbiographynophoto}{Jane Doe}
+%Biography text here.
+%\end{IEEEbiographynophoto}
+
+% You can push biographies down or up by placing
+% a \vfill before or after them. The appropriate
+% use of \vfill depends on what kind of text is
+% on the last page and whether or not the columns
+% are being equalized.
+
+%\vfill
+
+% Can be used to pull up biographies so that the bottom of the last one
+% is flush with the other column.
+%\enlargethispage{-5in}
+
+
+
+% that's all folks
+\end{document}
+
+
