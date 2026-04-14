@@ -1,14 +1,20 @@
 {
   "doctorId": "123",
   "doctorSecret": "456",
-  "authorizedAction": "1",
+  "patientId": "1",
+  "medicationId": "5",
   "sourceId": "1",
+  "policyVersion": "1",
   "dataAge": "30",
+  "authorizedAction": "1",
   "allergyClassId": "2",
   "medicationClassId": "5",
-  "doctorCredentialHash": "19620391833206800292073497099357851348339828238212863168390691880932172496143",
-  "trustedSourceHash": "18586133768512220936620570745912940619677854269274689475585506675881198879027",
-  "requiredAction": "1",
+  "clinVal": "45",
+  "stmtHash": "20269129304894014268238927229032649395352369367031062265122547518427378358730",
+  "outcome": "1",
+  "tsAnchor": "90",
+  "nonce": "42",
   "deltaMax": "90",
-  "outcome": "1"
+  "theta": "30",
+  "requiredAction": "1"
 }

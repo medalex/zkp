@@ -1,7 +1,7 @@
 [
   {
     "id": "S1",
-    "name": "Valid baseline — accept prescription",
+    "name": "Valid baseline — accept Metformin prescription (eGFR=45 ≥ θ=30)",
     "expectProof": true,
     "expectVerify": true,
     "result": true

@@ -186,45 +186,69 @@ async function main() {
     log(formatKey(vKey));
 
     // ────────────────────────────────────────────────────────────────────────
-    // STEP 4: Compute public inputs (Poseidon hashes)
+    // STEP 4: Compute stmtHash and build test witness  (Eq. 14, Section VII-B)
+    // stmtHash = Poseidon(doctorId, doctorSecret, patientId, medicationId,
+    //                     sourceId, policyVersion, nonce)
     // ────────────────────────────────────────────────────────────────────────
-    section("STEP 4 — Compute public inputs for test witness");
+    section("STEP 4 — Compute stmtHash and build test witness (Metformin running case)");
 
     const { buildPoseidon } = require("circomlibjs");
     const poseidon = await buildPoseidon();
     const F = poseidon.F;
 
-    const doctorId     = BigInt("123");
-    const doctorSecret = BigInt("456");
-    const sourceId     = BigInt("1");
+    // Identity components — private, committed via stmtHash
+    const doctorId      = BigInt("123");
+    const doctorSecret  = BigInt("456");
+    const patientId     = BigInt("1");
+    const medicationId  = BigInt("5");   // 5 = Metformin (antidiabetic)
+    const sourceId      = BigInt("1");   // 1 = hospital (trusted source)
+    const policyVersion = BigInt("1");
+    const nonce         = BigInt("42");  // per-workflow replay-protection value
 
-    const credHash = F.toObject(poseidon([doctorId, doctorSecret]));
-    const srcHash  = F.toObject(poseidon([sourceId]));
+    // stmtHash = H(φ+ ‖ policyVersion ‖ nonce)  [Eq. 14]
+    const stmtHashVal = F.toObject(
+        poseidon([doctorId, doctorSecret, patientId, medicationId,
+                  sourceId, policyVersion, nonce])
+    );
 
-    log(`doctorId     = ${doctorId}`);
-    log(`doctorSecret = ${doctorSecret}`);
-    log(`sourceId     = ${sourceId}`);
-    log(`doctorCredentialHash = ${credHash}`);
-    log(`trustedSourceHash    = ${srcHash}`);
+    log(`doctorId      = ${doctorId}`);
+    log(`doctorSecret  = ${doctorSecret}`);
+    log(`patientId     = ${patientId}`);
+    log(`medicationId  = ${medicationId}  (5 = Metformin)`);
+    log(`sourceId      = ${sourceId}  (1 = hospital)`);
+    log(`policyVersion = ${policyVersion}`);
+    log(`nonce         = ${nonce}`);
+    log(`stmtHash = Poseidon(doctorId, doctorSecret, patientId, medicationId,`);
+    log(`                    sourceId, policyVersion, nonce)`);
+    log(`         = ${stmtHashVal}`);
 
+    // Running case: Metformin, eGFR=45 ≥ θ=30, no contraindication  (Section VII-B)
     const input = {
-        doctorId:             doctorId.toString(),
-        doctorSecret:         doctorSecret.toString(),
-        authorizedAction:     "1",
-        sourceId:             sourceId.toString(),
-        dataAge:              "30",
-        allergyClassId:       "2",
-        medicationClassId:    "5",
-        doctorCredentialHash: credHash.toString(),
-        trustedSourceHash:    srcHash.toString(),
-        requiredAction:       "1",
-        deltaMax:             "90",
-        outcome:              "1"
+        // Private inputs (11) — w = ⟨w_id, w_ctx, w_clin, w_ont, w_aux⟩  (Eq. 24)
+        doctorId:         doctorId.toString(),
+        doctorSecret:     doctorSecret.toString(),
+        patientId:        patientId.toString(),
+        medicationId:     medicationId.toString(),
+        sourceId:         sourceId.toString(),
+        policyVersion:    policyVersion.toString(),
+        dataAge:          "30",   // t_now − t_s = 30 days  (< Δmax = 90)
+        authorizedAction: "1",    // prescribe action
+        allergyClassId:   "2",    // β-lactam allergy  (≠ medicationClassId → no contraindication)
+        medicationClassId:"5",    // antidiabetic class (Metformin)
+        clinVal:          "45",   // eGFR = 45 mL/min/1.73m²  (≥ θ = 30 → pol_ok = 1)
+        // Public inputs (7) — pub = ⟨stmtHash, outcome, tsAnchor, nonce, Δmax, θ, requiredAction⟩ (Eq. 25)
+        stmtHash:         stmtHashVal.toString(),
+        outcome:          "1",
+        tsAnchor:         "90",   // coarse-grained time anchor for auditability
+        nonce:            nonce.toString(),
+        deltaMax:         "90",   // Δmax = 90 days per FDA/ADA guidelines
+        theta:            "30",   // θ = 30 mL/min/1.73m² per FDA Metformin labeling
+        requiredAction:   "1"
     };
 
     fs.writeFileSync("input.json", JSON.stringify(input, null, 2));
     log("");
-    log("input.json saved.");
+    log("input.json saved (11 private + 7 public inputs).");
     log(JSON.stringify(input, null, 2));
 
     // ────────────────────────────────────────────────────────────────────────

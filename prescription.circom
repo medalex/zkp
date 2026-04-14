@@ -3,169 +3,194 @@ include "node_modules/circomlib/circuits/poseidon.circom";
 include "node_modules/circomlib/circuits/comparators.circom";
 
 /*
- * PrescriptionValidation Circuit
- * 
- * Implements the semantic satisfaction relation from Definition 5 (formula 12):
- * M, I |= Rx(d, p, m) <=> Valid(I) AND Au(I, prescribe) AND NOT Ct(p, m)
- * 
- * Where Valid(I) is defined in Definition 4 (formula 11):
- * Valid(I) <=> (t_now - t_s) < Δmax AND Auth(cred) AND src ∈ S_trusted
+ * PrescriptionValidation Circuit — v2
  *
- * All patient-specific data stays in the private witness (off-chain).
- * Only commitments and the binary outcome are revealed on-chain.
+ * Implements the semantic satisfaction relation (Definition 2, Eq. 13):
+ *
+ *   M, Γ |= Rx(d, p, m) ⟺
+ *       M, Γ |= Au(d, prescribe)    [auth_ok,   Eq. 16]
+ *     ∧ M, Γ ⊭ Ct(p, m)            [no_contra, Eq. 17, 21]
+ *     ∧ M, Γ |= PolOk(p, m)        [pol_ok,    Eq. 19]
+ *
+ * Context validity (Definition 1, Eq. 8):
+ *   Valid(Γ) ⟺ (t_now − t_s) ≤ Δmax ∧ Auth(cred) ∧ src ∈ S_trusted
+ *
+ * Statement commitment (Eq. 14):
+ *   stmtHash = H(φ+ ‖ policyVersion ‖ nonce)
+ *            = Poseidon(doctorId, doctorSecret, patientId, medicationId,
+ *                       sourceId, policyVersion, nonce)
+ *
+ * Composition (Eq. 20–23):
+ *   valid_ctx   = fresh_ok  ∧ auth_ok      (Eq. 20)
+ *   no_contra   = ¬allergy_contra          (Eq. 21)
+ *   clinical_ok = no_contra ∧ pol_ok       (Eq. 22)
+ *   outcome     = valid_ctx ∧ clinical_ok  (Eq. 23)
+ *
+ * Public inputs  (7): stmtHash, outcome, tsAnchor, nonce, deltaMax, theta, requiredAction
+ * Private inputs (11): doctorId, doctorSecret, patientId, medicationId, sourceId,
+ *                      policyVersion, dataAge, authorizedAction,
+ *                      allergyClassId, medicationClassId, clinVal
  */
 template PrescriptionValidation() {
 
-    // ========================================
-    // PRIVATE INPUTS (witness) — not revealed
-    // ========================================
+    // =========================================================================
+    // PRIVATE INPUTS — witness w = ⟨w_id, w_ctx, w_clin, w_ont, w_aux⟩  (Eq. 24)
+    // =========================================================================
 
-    // Doctor identity — used for Auth(cred) check, Definition 4 formula (11)
-    signal input doctorId;
-    signal input doctorSecret;        // private key/password known only to doctor
+    // w_id: identity components committed into stmtHash
+    signal input doctorId;          // prescriber identifier
+    signal input doctorSecret;      // prescriber private key / password
+    signal input patientId;         // patient identifier
+    signal input medicationId;      // medication identifier (e.g., 5 = Metformin)
+    signal input sourceId;          // data source identifier (e.g., 1 = hospital)
+    signal input policyVersion;     // governance-approved theory snapshot version
 
-    // Action being performed — used for Au(I, prescribe) check, formula (12)
-    signal input authorizedAction;    // encoded action: prescribe = 1
+    // w_ctx: context validity  [Definition 1]
+    signal input dataAge;           // t_now − t_s in days
+    signal input authorizedAction;  // action code performed: prescribe = 1  [Eq. 16]
 
-    // Data source identity — used for src ∈ S_trusted check, formula (11)
-    signal input sourceId;            // e.g. hospital = 1, lab = 2
-
-    // Data age in days — used for (t_now - t_s) < Δmax check, formula (11)
-    signal input dataAge;             // t_now - t_s
-
-    // Clinical evidence — used for NOT Ct(p, m) check, formula (12)
-    signal input allergyClassId;      // drug class of patient's allergen (e.g. beta-lactam = 2)
-    signal input medicationClassId;   // drug class of prescribed medication (e.g. Metformin = 5)
-
-
-    // ========================================
-    // PUBLIC INPUTS — visible on-chain
-    // ========================================
-
-    // Commitment to doctor credentials: H(doctorId, doctorSecret)
-    // Stored in governance registry on-chain
-    signal input doctorCredentialHash;
-
-    // Commitment to trusted data source: H(sourceId)
-    // Governance-approved source list anchored on-chain
-    signal input trustedSourceHash;
-
-    // Required action code for prescription workflow
-    // Governance policy parameter: prescribe = 1
-    signal input requiredAction;
-
-    // Maximum allowed data age in days (governance parameter)
-    // e.g. deltaMax = 90 days per FDA/ADA guidelines
-    signal input deltaMax;
-
-    // Expected outcome: 1 = accept, 0 = reject
-    // Verified against computed outcome at the end
-    signal input outcome;
+    // w_clin: clinical evidence  [Eq. 17, 19]
+    signal input allergyClassId;    // patient's allergen drug class (e.g., 2 = β-lactam)
+    signal input medicationClassId; // prescribed drug class          (e.g., 5 = antidiabetic)
+    signal input clinVal;           // patient's measured eGFR value  [Pol(m, eGFR, ≥, θ)]
 
 
-    // ========================================
-    // CHECK 1: Auth(cred) — Definition 4, formula (11)
-    // Verify doctor credentials using Poseidon hash
-    // Prover knows (doctorId, doctorSecret) but only hash is public
-    // ========================================
-    component credHasher = Poseidon(2);
-    credHasher.inputs[0] <== doctorId;
-    credHasher.inputs[1] <== doctorSecret;
+    // =========================================================================
+    // PUBLIC INPUTS — pub = ⟨stmtHash, outcome, tsAnchor, nonce, deltaMax, theta, requiredAction⟩
+    // (Eq. 25)
+    // =========================================================================
 
-    // Computed hash must match the on-chain credential hash
-    credHasher.out === doctorCredentialHash;
-
-
-    // ========================================
-    // CHECK 2: src ∈ S_trusted — Definition 4, formula (11)
-    // Verify that data source is in the governance-approved trusted set
-    // ========================================
-    component srcHasher = Poseidon(1);
-    srcHasher.inputs[0] <== sourceId;
-
-    // Computed source hash must match the on-chain trusted source hash
-    srcHasher.out === trustedSourceHash;
+    signal input stmtHash;       // H(φ+ ‖ policyVersion ‖ nonce)           [Eq. 14]
+    signal input outcome;        // 1 = accept, 0 = reject
+    signal input tsAnchor;       // coarse-grained time anchor for auditability (no circuit constraint)
+    signal input nonce;          // per-workflow unique value (replay protection)
+    signal input deltaMax;       // Δmax: maximum permitted data age in days  [Def. 1]
+    signal input theta;          // θ: clinical policy threshold, e.g., eGFR ≥ 30  [Eq. 19]
+    signal input requiredAction; // governance policy action code: prescribe = 1
 
 
-    // ========================================
-    // CHECK 3: (t_now - t_s) < Δmax — Definition 4, formula (11)
-    // Verify that clinical data is fresh enough
-    // ========================================
-    component freshCheck = LessThan(32);  // 32-bit comparison
-    freshCheck.in[0] <== dataAge;
-    freshCheck.in[1] <== deltaMax;
+    // =========================================================================
+    // SUB-CIRCUIT 1: Statement binding — stmtHash  [Eq. 14]
+    //
+    // Verifies: Poseidon(doctorId, doctorSecret, patientId, medicationId,
+    //                    sourceId, policyVersion, nonce) = stmtHash
+    //
+    // This single constraint simultaneously enforces Auth(cred) and src ∈ S_trusted:
+    // any wrong identity component produces a hash mismatch and fails the proof.
+    // =========================================================================
+    component hasher = Poseidon(7);
+    hasher.inputs[0] <== doctorId;
+    hasher.inputs[1] <== doctorSecret;
+    hasher.inputs[2] <== patientId;
+    hasher.inputs[3] <== medicationId;
+    hasher.inputs[4] <== sourceId;
+    hasher.inputs[5] <== policyVersion;
+    hasher.inputs[6] <== nonce;
 
-    signal freshOk;
-    freshOk <== freshCheck.out;           // 1 if dataAge < deltaMax, else 0
+    hasher.out === stmtHash;
 
 
-    // ========================================
-    // CHECK 4: Au(I, prescribe) — Definition 5, formula (12)
-    // Verify that interpreter is authorized to perform prescribe action
-    // ========================================
+    // =========================================================================
+    // SUB-CIRCUIT 2: auth_ok — Au(d, prescribe)  [Eq. 16]
+    //
+    // The prescriber's action must match the governance-required action.
+    // Identity binding (Auth(cred), src ∈ S_trusted) is enforced by stmtHash above.
+    // =========================================================================
+    component authComp = IsEqual();
+    authComp.in[0] <== authorizedAction;
+    authComp.in[1] <== requiredAction;
     signal authOk;
-    authOk <== authorizedAction - requiredAction;
-
-    // Difference must be 0 — actions must match exactly
-    authOk === 0;
+    authOk <== authComp.out;  // 1 if authorized, 0 otherwise
 
 
-    // ========================================
-    // CHECK 5: NOT Ct(p, m) — Definition 5, formula (12)
-    // Verify no contraindication exists between allergy class and medication class
-    // Contraindication occurs when allergyClassId == medicationClassId
-    // e.g. patient allergic to Penicillin (beta-lactam class = 2)
-    //      prescribed Amoxicillin (beta-lactam class = 2) => contraindication!
-    //      prescribed Metformin (antidiabetic class = 5)  => no contraindication
-    // ========================================
+    // =========================================================================
+    // SUB-CIRCUIT 3: fresh_ok — (t_now − t_s) ≤ Δmax  [Eq. 18, Definition 1]
+    //
+    // Clinical evidence must not be stale. Uses ≤ per paper Definition 1 (Eq. 8).
+    // =========================================================================
+    component freshComp = LessEqThan(32);
+    freshComp.in[0] <== dataAge;
+    freshComp.in[1] <== deltaMax;
+    signal freshOk;
+    freshOk <== freshComp.out;  // 1 if fresh, 0 if stale
+
+
+    // =========================================================================
+    // SUB-CIRCUIT 4: no_contra — ¬Ct(p, m)  [Eq. 17, 21]
+    //
+    // Contraindication is present when allergyClassId == medicationClassId
+    // (patient is allergic to the same drug class as the prescribed medication).
+    // Implemented using the is-zero gadget pattern.
+    // =========================================================================
     signal classDiff;
     classDiff <== allergyClassId - medicationClassId;
 
-    // is_zero pattern: isZero = 1 if classDiff == 0 (contraindication exists)
     signal classDiffInv;
     classDiffInv <-- (classDiff == 0) ? 0 : (1 / classDiff);
 
-    signal isZero;
-    isZero <== 1 - (classDiff * classDiffInv);
+    signal allergyContra;
+    allergyContra <== 1 - (classDiff * classDiffInv);  // 1 if contraindicated
+    classDiff * allergyContra === 0;                    // is-zero correctness constraint
 
-    // Enforce correctness of is_zero pattern
-    classDiff * isZero === 0;
-
-    // noContraindication = 1 if classes differ (safe to prescribe)
-    signal noContraindication;
-    noContraindication <== 1 - isZero;
+    signal noContra;
+    noContra <== 1 - allergyContra;  // 1 if safe to prescribe, 0 if contraindicated
 
 
-    // ========================================
-    // FINAL COMPOSITION — formulas (48-51)
-    // valid_ctx   = freshOk AND credOk AND srcTrusted  (checks 1, 2, 3)
-    // auth_ok     = Au(I, prescribe)                   (check 4)
-    // clinical_ok = NOT Ct(p, m)                       (check 5)
-    // outcome     = valid_ctx AND auth_ok AND clinical_ok
+    // =========================================================================
+    // SUB-CIRCUIT 5: pol_ok — PolOk(p, m)  [Eq. 19]
     //
-    // Note: credOk and srcTrusted are enforced via === constraints above
-    // so validCtx here carries only freshOk as a signal
-    // ========================================
+    // Enforces clinical policy axiom Pol(Metformin, eGFR, ≥, θ):
+    //   pol_ok = 1  ⟺  clinVal ≥ theta
+    // Patient's eGFR must meet the governance-approved threshold (θ = 30 per FDA).
+    // The clinical value clinVal remains private; only theta is public.
+    // =========================================================================
+    component polComp = GreaterEqThan(32);
+    polComp.in[0] <== clinVal;
+    polComp.in[1] <== theta;
+    signal polOk;
+    polOk <== polComp.out;  // 1 if eGFR ≥ θ, 0 if renal impairment
+
+
+    // =========================================================================
+    // FINAL COMPOSITION — Eq. 20–23
+    //
+    //   valid_ctx   = fresh_ok  * auth_ok      (Eq. 20)  — AND via multiplication
+    //   no_contra   = 1 - allergyContra        (Eq. 21)  — NOT via subtraction
+    //   clinical_ok = no_contra * pol_ok        (Eq. 22)  — AND via multiplication
+    //   outcome     = valid_ctx * clinical_ok   (Eq. 23)  — AND via multiplication
+    //
+    // Boolean signals b ∈ {0,1} enforced by b*(b-1)=0 inside circomlib components.
+    // A single failure in any sub-circuit sets outcome = 0.
+    // =========================================================================
     signal validCtx;
-    validCtx <== freshOk;
+    validCtx <== freshOk * authOk;
+
+    signal clinicalOk;
+    clinicalOk <== noContra * polOk;
 
     signal computedOutcome;
-    computedOutcome <== validCtx * noContraindication;
+    computedOutcome <== validCtx * clinicalOk;
 
-    // Final check: computed outcome must match the declared public outcome
-    // This prevents the prover from lying about the result
+    // The declared public outcome must match what the circuit computed.
+    // This prevents the prover from lying about the result.
     computedOutcome === outcome;
+
+    // tsAnchor is committed as a public input for on-chain auditability.
+    // The governance layer records the time anchor; no additional circuit constraint needed.
+    // (Public inputs are automatically included in the Groth16 IC accumulator.)
 }
 
 /*
- * Public inputs declared here are visible to the on-chain verifier.
- * All other signals remain private (zero-knowledge property).
- * Corresponds to pub = <stmt_hash, outcome, timestamp> from formula (53)
+ * Public inputs declared here are visible to the on-chain verifier (Eq. 25):
+ *   pub = ⟨stmtHash, outcome, tsAnchor, nonce, deltaMax, theta, requiredAction⟩
+ * 7 public inputs — matches Table VII and Table VIII of the paper.
  */
 component main {public [
-    doctorCredentialHash,   // H(doctorId, doctorSecret) — Auth(cred)
-    trustedSourceHash,      // H(sourceId) — src ∈ S_trusted
-    requiredAction,         // Au(I, prescribe)
-    deltaMax,               // Δmax — freshness bound
-    outcome                 // accept/reject result
+    stmtHash,
+    outcome,
+    tsAnchor,
+    nonce,
+    deltaMax,
+    theta,
+    requiredAction
 ]} = PrescriptionValidation();
